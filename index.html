@@ -202,8 +202,9 @@
   footer .fbesties{font-family:'Dancing Script',cursive;font-weight:700;font-size:1.5rem;color:#FFB9C9;margin-top:2px}
 
   /* barcode deco */
-  .sec-icon{color:var(--red);width:46px;flex:none;transform:rotate(-6deg);animation:doodleFloat 5s ease-in-out infinite}
+  .sec-icon{color:var(--red);width:46px;flex:none;animation:doodleFloat 5s ease-in-out infinite, secWiggle 4.2s ease-in-out infinite}
   .sec-icon svg{width:100%;height:auto;display:block}
+  @keyframes secWiggle{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(7deg)}}
   @media(prefers-reduced-motion:reduce){.sec-icon{animation:none}}
 
   /* ---------- responsive ---------- */
