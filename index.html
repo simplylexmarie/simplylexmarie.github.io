@@ -95,7 +95,11 @@
   .filelbl{position:absolute;font-family:'Space Mono',monospace;font-size:.66rem;background:var(--ink);color:var(--cream);padding:3px 8px;border-radius:4px;z-index:5}
 
   /* doodles */
-  .doodle{position:absolute;z-index:4;pointer-events:none}
+  .doodle{position:absolute;z-index:4;pointer-events:none;animation:doodleFloat 6s ease-in-out infinite, doodleTwinkle 3.6s ease-in-out infinite}
+  .doodle:nth-of-type(2){animation-duration:7.6s,4.4s;animation-delay:-2.6s,-1.7s}
+  @keyframes doodleFloat{0%,100%{translate:0 0}50%{translate:0 -7px}}
+  @keyframes doodleTwinkle{0%,100%{transform:scale(1) rotate(0deg);opacity:.8}50%{transform:scale(1.14) rotate(9deg);opacity:1}}
+  @media (prefers-reduced-motion:reduce){.doodle{animation:none}}
   .annot{position:absolute;font-family:'Caveat',cursive;font-weight:700;color:var(--red);font-size:2.1rem;line-height:1;z-index:7;pointer-events:none}
   .annot .arrow{display:block;width:60px;height:auto;margin:1px 0 0 34px}
 
