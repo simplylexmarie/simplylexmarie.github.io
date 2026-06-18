@@ -38,11 +38,17 @@
   .pill.ghost{background:var(--paper);color:var(--ink);border:1.5px solid var(--pink2)}
   .pill.ghost:hover{transform:translateY(-2px);border-color:var(--red)}
 
-  .marq{background:var(--peach);padding:16px 0;border-top:1px solid rgba(166,90,82,.15);border-bottom:1px solid rgba(166,90,82,.15);overflow:hidden;white-space:nowrap}
-  .marq-track{display:inline-flex;gap:34px;animation:scroll 26s linear infinite;font-family:'Dancing Script',cursive;font-weight:700;font-size:1.5rem;color:var(--brown)}
-  .marq-track span{display:inline-flex;align-items:center;gap:34px}
-  .marq-track .mdot{width:7px;height:7px;border-radius:50%;background:var(--red)}
-  @keyframes scroll{to{transform:translateX(-50%)}}
+  .slider{overflow:hidden;white-space:nowrap;background:var(--peach);border-top:1px solid rgba(166,90,82,.15);border-bottom:1px solid rgba(166,90,82,.15);padding:14px 0}
+  .slider__track{display:flex;width:max-content;animation:sliderScroll 32s linear infinite}
+  .slider__group{display:flex;align-items:center;flex:none;font-family:'Dancing Script',cursive;font-weight:700;font-size:1.5rem;color:var(--brown)}
+  .slider__group span{padding:0 20px;flex:none}
+  .slider__group i{width:7px;height:7px;border-radius:50%;background:var(--red);flex:none}
+  .slider--dark{background:var(--ink);border-color:rgba(255,255,255,.12)}
+  .slider--dark .slider__group{color:var(--cream)}
+  .slider--dark .slider__group i{background:var(--hot)}
+  .slider--dark .slider__track{animation-duration:46s}
+  @keyframes sliderScroll{to{transform:translateX(-50%)}}
+  @media(prefers-reduced-motion:reduce){.slider__track{animation:none}}
 
   /* full-bleed section + inner container */
   .band{width:100%;padding:64px 0;position:relative;overflow:hidden}
@@ -296,6 +302,14 @@
   </div>
 </section>
 
+<!-- HERO SLIDER (stats / as-seen-on) -->
+<div class="slider slider--dark" aria-hidden="true">
+  <div class="slider__track">
+    <div class="slider__group"><span>Big Bitty Besties</span><i></i><span>As seen on TikTok</span><i></i><span>Instagram</span><i></i><span>LTK</span><i></i><span>Amazon Storefront</span><i></i><span>32H fashion finds</span><i></i><span>Pinterest recreations</span><i></i><span>Try-on reviews</span><i></i><span>Fuller-bust friendly</span><i></i><span>6,800+ TikTok followers</span><i></i><span>150K+ TikTok likes</span><i></i></div>
+    <div class="slider__group"><span>Big Bitty Besties</span><i></i><span>As seen on TikTok</span><i></i><span>Instagram</span><i></i><span>LTK</span><i></i><span>Amazon Storefront</span><i></i><span>32H fashion finds</span><i></i><span>Pinterest recreations</span><i></i><span>Try-on reviews</span><i></i><span>Fuller-bust friendly</span><i></i><span>6,800+ TikTok followers</span><i></i><span>150K+ TikTok likes</span><i></i></div>
+  </div>
+</div>
+
 <!-- ABOUT -->
 <section class="band b-pink" id="about">
   <div class="inner about">
@@ -317,11 +331,11 @@
   </div>
 </section>
 
-<!-- MARQUEE -->
-<div class="marq">
-  <div class="marq-track">
-    <span>honest reviews<i class="mdot"></i>big bitty besties<i class="mdot"></i>fuller bust<i class="mdot"></i>swim szn<i class="mdot"></i>try-on haul<i class="mdot"></i>real fit<i class="mdot"></i>no filters<i class="mdot"></i></span>
-    <span>honest reviews<i class="mdot"></i>big bitty besties<i class="mdot"></i>fuller bust<i class="mdot"></i>swim szn<i class="mdot"></i>try-on haul<i class="mdot"></i>real fit<i class="mdot"></i>no filters<i class="mdot"></i></span>
+<!-- SLIDER (above Find My Fits) -->
+<div class="slider" aria-hidden="true">
+  <div class="slider__track">
+    <div class="slider__group"><span>honest reviews</span><i></i><span>big bitty besties</span><i></i><span>fuller bust</span><i></i><span>swim szn</span><i></i><span>try-on haul</span><i></i><span>real fit</span><i></i><span>no filters</span><i></i></div>
+    <div class="slider__group"><span>honest reviews</span><i></i><span>big bitty besties</span><i></i><span>fuller bust</span><i></i><span>swim szn</span><i></i><span>try-on haul</span><i></i><span>real fit</span><i></i><span>no filters</span><i></i></div>
   </div>
 </div>
 
