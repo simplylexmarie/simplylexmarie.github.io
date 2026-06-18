@@ -175,6 +175,8 @@
   .fnote{font-family:'Space Mono',monospace;font-size:.64rem;text-align:center;color:var(--muted);margin-top:11px}
   .status{text-align:center;font-family:'Caveat',cursive;font-size:1.4rem;color:var(--red);margin-top:10px;display:none}
   .status.show{display:block}
+  .status.ok{color:#3aa657}
+  .status.err{color:var(--red)}
 
   /* footer */
   footer{background:var(--ink);color:var(--cream);text-align:center;padding:42px 22px}
@@ -378,7 +380,7 @@
       <div class="fg"><label>subject</label><input name="subject" required placeholder="collab · question · just saying hi" /></div>
       <div class="fg"><label>message</label><textarea name="message" required placeholder="tell me a little about it…"></textarea></div>
       <button class="send" type="submit">Send message</button>
-      <p class="fnote">goes straight to simplylexmarie@gmail.com</p>
+      <p class="fnote">I read every message and reply personally.</p>
       <p class="status hand" id="st"></p>
     </form>
   </div>
@@ -395,6 +397,7 @@
   <div class="fmeta">simply lex marie · made with love · 2026</div>
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
   const fslots = [...document.querySelectorAll('.booth .fslot')].map(slot=>({
     imgs: slot.querySelectorAll('.fslide'), i: 0
@@ -412,12 +415,41 @@
     }, 1750);
   }
 
-  const f=document.getElementById('cf'),s=document.getElementById('st'),E='simplylexmarie@gmail.com';
-  f.addEventListener('submit',e=>{e.preventDefault();
-    const sub=encodeURIComponent('[Website] '+f.subject.value+' (from '+f.name.value+')');
-    const b=encodeURIComponent('Name: '+f.name.value+'\nEmail: '+f.email.value+'\n\n'+f.message.value);
-    window.location.href='mailto:'+E+'?subject='+sub+'&body='+b;
-    s.textContent='opening your email to send…';s.classList.add('show');});
+  // ---- Contact form -> Supabase ----
+  const SUPABASE_URL = 'https://rqukbgvfgjvgvjprptcr.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_aVYauYUD9vJksZW6_vpA2w_8gvDN5zV';
+  const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  const f = document.getElementById('cf');
+  const s = document.getElementById('st');
+  const sendBtn = f.querySelector('.send');
+
+  f.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    sendBtn.disabled = true;
+    sendBtn.textContent = 'Sending…';
+    s.className = 'status hand';
+
+    const { error } = await db.from('contact_messages').insert({
+      name: f.elements['name'].value.trim(),
+      email: f.elements['email'].value.trim(),
+      subject: f.elements['subject'].value.trim(),
+      message: f.elements['message'].value.trim()
+    });
+
+    if (error) {
+      sendBtn.disabled = false;
+      sendBtn.textContent = 'Send message';
+      s.textContent = 'Something went wrong. Please try again, or email simplylexmarie@gmail.com';
+      s.className = 'status hand show err';
+      return;
+    }
+
+    f.reset();
+    sendBtn.textContent = 'Sent ✓';
+    s.textContent = 'Thank you! Your message has been sent.';
+    s.className = 'status hand show ok';
+  });
 </script>
 </body>
 </html>
