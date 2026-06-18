@@ -1,0 +1,8 @@
+GRAPHICS / ICONS / LOGOS
+========================
+For future logo files, stickers, or decorative graphic images.
+
+NOTE: Right now every icon and doodle on the site (the TikTok logo,
+shopping bag, play buttons, sparkles, etc.) is drawn directly in the
+page code as SVG — there are no icon image files to store here yet.
+Add a logo or graphic image here when you have one.

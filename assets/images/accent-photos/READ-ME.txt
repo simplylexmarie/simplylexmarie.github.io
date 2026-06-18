@@ -1,0 +1,5 @@
+ACCENT PHOTOS
+=============
+Drop extra decorative/accent photos for the site in this folder
+(little lifestyle shots, detail pics, etc.), then ask Claude to
+place them on the page. Currently empty — nothing here is used yet.

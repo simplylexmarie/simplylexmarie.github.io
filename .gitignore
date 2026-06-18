@@ -1,8 +1,11 @@
+# macOS junk
 .DS_Store
 **/.DS_Store
-inspiration/
-accent-photos/
+
+# Local-only folders (kept on your computer, NOT published to the live site)
+originals/
+screenshots/
+
+# Never publish raw iPhone photo formats
 *.HEIC
 *.heic
-IMG_*.JPG
-IMG_*.jpg
