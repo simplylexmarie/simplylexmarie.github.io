@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Alexia Rucker · Scrapbook</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Gloria+Hallelujah&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --cream:#FFF6EE;
+    --paper:#FFFFFF;
+    --pink:#FFD7E2;
+    --pink-deep:#FF8FB0;
+    --red:#F0455B;
+    --orange:#FF9E68;
+    --ink:#4A3338;
+    --muted:#9C7C84;
+    --tape:rgba(255,210,150,.55);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Quicksand',sans-serif;color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden;
+    background:
+      radial-gradient(circle at 12% 8%, #FFE3EC 0, transparent 42%),
+      radial-gradient(circle at 88% 22%, #FFEAD6 0, transparent 40%),
+      radial-gradient(circle at 50% 92%, #FFE0EA 0, transparent 48%),
+      var(--cream);
+    background-attachment:fixed;
+  }
+  a{color:inherit;text-decoration:none}
+  .hand{font-family:'Caveat',cursive}
+  .marker{font-family:'Gloria Hallelujah',cursive}
+  .wrap{max-width:480px;margin:0 auto;padding:0 20px 50px}
+
+  /* sticker helper */
+  .sticker{position:absolute;font-size:1.7rem;filter:drop-shadow(0 2px 2px rgba(0,0,0,.12));pointer-events:none;z-index:5}
+
+  /* HERO polaroid */
+  .hero{text-align:center;padding:34px 0 8px;position:relative}
+  .badge{display:inline-block;background:var(--red);color:#fff;font-family:'Gloria Hallelujah',cursive;font-size:.66rem;padding:6px 16px;border-radius:999px;transform:rotate(-3deg);box-shadow:0 4px 0 rgba(176,40,60,.3);margin-bottom:14px}
+  .polaroid{
+    background:#fff;padding:12px 12px 46px;display:inline-block;border-radius:4px;position:relative;
+    box-shadow:0 12px 30px -10px rgba(0,0,0,.3);transform:rotate(-3deg);max-width:260px;
+  }
+  .polaroid::before{content:"";position:absolute;top:-14px;left:50%;transform:translateX(-50%) rotate(2deg);width:120px;height:34px;background:var(--tape);border:1px dashed rgba(255,255,255,.6)}
+  .polaroid img{width:100%;display:block;border-radius:2px}
+  .polaroid .pfallback{width:236px;height:300px;background:linear-gradient(135deg,var(--pink),var(--orange));display:flex;align-items:center;justify-content:center;font-family:'Caveat',cursive;font-size:6rem;color:#fff;border-radius:2px}
+  .polaroid .cap{font-family:'Caveat',cursive;font-size:1.7rem;color:var(--ink);margin-top:8px;position:absolute;bottom:6px;left:0;right:0}
+
+  .hero h1{font-family:'Caveat',cursive;font-weight:700;font-size:3.6rem;line-height:1;margin:22px 0 2px}
+  .hero .tag{font-family:'Quicksand';font-weight:500;color:var(--muted);max-width:330px;margin:0 auto;font-size:.98rem}
+  .hero .tag b{color:var(--red)}
+
+  /* doodle tags */
+  .tags{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:16px}
+  .tag-chip{font-family:'Gloria Hallelujah',cursive;font-size:.64rem;padding:6px 12px;border-radius:999px;border:2px dashed;}
+  .t1{color:var(--red);border-color:var(--pink-deep);transform:rotate(-2deg)}
+  .t2{color:#E07A2E;border-color:var(--orange);transform:rotate(2deg)}
+  .t3{color:var(--pink-deep);border-color:var(--pink-deep);transform:rotate(-1deg)}
+
+  /* social buttons as stickers */
+  .socials{display:flex;flex-direction:column;gap:14px;margin-top:26px}
+  .sbtn{
+    display:flex;align-items:center;gap:14px;padding:15px 20px;border-radius:18px;font-weight:700;font-size:1.02rem;
+    background:#fff;border:2.5px solid var(--ink);box-shadow:4px 4px 0 var(--ink);transition:.12s;position:relative;
+  }
+  .sbtn:active,.sbtn:hover{transform:translate(2px,2px);box-shadow:2px 2px 0 var(--ink)}
+  .sbtn .ic{width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex:none;color:#fff}
+  .sbtn .ic svg{width:20px;height:20px}
+  .sbtn small{display:block;font-weight:500;font-size:.72rem;color:var(--muted)}
+  .ltk .ic{background:var(--red)}
+  .tt .ic{background:var(--ink)}
+  .ig .ic{background:var(--pink-deep)}
+  .sbtn.ltk{border-color:var(--red);box-shadow:4px 4px 0 var(--red)}
+  .sbtn.ltk:hover{box-shadow:2px 2px 0 var(--red)}
+
+  /* section title */
+  .sec{margin-top:42px;position:relative}
+  .sec-title{font-family:'Caveat',cursive;font-size:2.4rem;text-align:center;margin-bottom:4px}
+  .sec-title .u{display:inline-block;border-bottom:5px solid var(--pink-deep);border-radius:2px;padding-bottom:2px;transform:rotate(-1deg)}
+  .sec-sub{text-align:center;font-family:'Gloria Hallelujah',cursive;font-size:.64rem;color:var(--muted);margin-bottom:20px}
+
+  /* about note card */
+  .note{
+    background:#FFFDF5;border-radius:6px;padding:24px 22px;position:relative;
+    box-shadow:0 10px 26px -12px rgba(0,0,0,.25);transform:rotate(-1deg);
+    background-image:repeating-linear-gradient(transparent,transparent 31px,rgba(240,69,91,.10) 31px,rgba(240,69,91,.10) 32px);
+  }
+  .note::before{content:"";position:absolute;top:-12px;left:30px;width:90px;height:28px;background:var(--tape);transform:rotate(-6deg)}
+  .note::after{content:"";position:absolute;top:-12px;right:30px;width:90px;height:28px;background:var(--tape);transform:rotate(5deg)}
+  .note p{font-family:'Caveat',cursive;font-size:1.5rem;line-height:1.45;color:var(--ink);margin-bottom:8px}
+  .note p:last-child{margin-bottom:0}
+  .note b{color:var(--red)}
+
+  /* shop cards — tilted polaroids grid */
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:18px 14px;margin-top:6px}
+  .pcard{
+    background:#fff;border-radius:6px;padding:12px 12px 16px;text-align:center;position:relative;
+    box-shadow:0 8px 20px -10px rgba(0,0,0,.28);transition:.15s;
+  }
+  .pcard:nth-child(odd){transform:rotate(-2deg)}
+  .pcard:nth-child(even){transform:rotate(2deg)}
+  .pcard:hover{transform:rotate(0) translateY(-4px)}
+  .pcard .thumb{height:96px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:2.4rem}
+  .pcard:nth-child(1) .thumb{background:linear-gradient(135deg,#FFD7E2,#FFB6CB)}
+  .pcard:nth-child(2) .thumb{background:linear-gradient(135deg,#FFE6CC,#FFC79B)}
+  .pcard:nth-child(3) .thumb{background:linear-gradient(135deg,#FFD2D8,#FF9FB0)}
+  .pcard:nth-child(4) .thumb{background:linear-gradient(135deg,#FCE0EC,#F2B6D2)}
+  .pcard h3{font-family:'Caveat',cursive;font-size:1.55rem;margin-top:8px;line-height:1}
+  .pcard small{font-size:.74rem;color:var(--muted);font-weight:500}
+  .pcard .stk{position:absolute;top:-12px;right:-8px;font-size:1.5rem;transform:rotate(12deg)}
+
+  /* contact */
+  .form-card{background:#FFFDF5;border-radius:8px;padding:24px 20px;box-shadow:0 10px 26px -12px rgba(0,0,0,.25);border:2px dashed var(--pink-deep)}
+  .form-card .lead{font-family:'Caveat',cursive;font-size:1.7rem;text-align:center;line-height:1.3}
+  .form-card .lead b{color:var(--red)}
+  .form-card .subl{text-align:center;font-size:.84rem;color:var(--muted);margin:6px 0 18px}
+  form{display:flex;flex-direction:column;gap:12px}
+  label{font-family:'Gloria Hallelujah',cursive;font-size:.62rem;color:var(--muted);margin-bottom:3px;display:block}
+  input,textarea{width:100%;font-family:'Quicksand';font-weight:500;font-size:.95rem;color:var(--ink);padding:12px 14px;border:2px solid var(--pink);border-radius:14px;background:#fff;transition:.2s}
+  input:focus,textarea:focus{outline:none;border-color:var(--red)}
+  textarea{resize:vertical;min-height:90px}
+  .send{margin-top:4px;border:none;cursor:pointer;background:var(--red);color:#fff;font-family:'Quicksand';font-weight:700;font-size:1rem;padding:15px;border-radius:16px;box-shadow:0 5px 0 #C8324A;transition:.12s}
+  .send:active{transform:translateY(3px);box-shadow:0 2px 0 #C8324A}
+  .note-s{text-align:center;font-size:.72rem;color:var(--muted);margin-top:10px;font-family:'Gloria Hallelujah',cursive}
+  .status{text-align:center;font-family:'Caveat',cursive;font-size:1.3rem;color:var(--red);margin-top:10px;display:none}
+  .status.show{display:block}
+
+  footer{text-align:center;margin-top:46px}
+  .foot-h{font-family:'Caveat',cursive;font-size:2rem}
+  .foot-s{font-family:'Gloria Hallelujah',cursive;font-size:.6rem;color:var(--muted);margin-top:4px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hero">
+    <span class="sticker" style="top:18px;left:6px;transform:rotate(-12deg)">🎀</span>
+    <span class="sticker" style="top:64px;right:2px;transform:rotate(10deg)">✨</span>
+    <div class="badge marker">hi, it's me!</div>
+    <div class="polaroid">
+      <img src="alexia.jpg" alt="Alexia Rucker"
+           onerror="this.outerHTML='&lt;div class=\'pfallback\'&gt;A&lt;/div&gt;'">
+      <div class="cap">that's me 🍰</div>
+    </div>
+    <h1>Alexia Rucker</h1>
+    <p class="tag">Honest <b>fuller-bust</b> try-ons, swimsuits that actually fit &amp; real-girl fashion finds 🧡</p>
+    <div class="tags">
+      <span class="tag-chip t1">try-ons</span>
+      <span class="tag-chip t2">swimsuits</span>
+      <span class="tag-chip t3">real fit</span>
+    </div>
+
+    <div class="socials">
+      <a class="sbtn ltk" href="https://www.shopltk.com/explore/lex_marie_big_bust_fashion" target="_blank" rel="noopener">
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></span>
+        <span>Shop My LTK<small>everything I post, shoppable</small></span>
+      </a>
+      <a class="sbtn tt" href="https://www.tiktok.com/@simply.lexmarie" target="_blank" rel="noopener">
+        <span class="ic"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.5 3c.3 2.2 1.6 3.9 3.8 4.2v2.5c-1.3.1-2.5-.3-3.8-1v6.8c0 3.3-2.4 5.5-5.5 5.5A5.4 5.4 0 0 1 5.6 15c0-3 2.4-5.3 5.4-5.3.3 0 .6 0 .9.1v2.7a2.7 2.7 0 0 0-1-.2 2.6 2.6 0 0 0 .1 5.2c1.5 0 2.6-1.1 2.6-2.8V3z"/></svg></span>
+        <span>TikTok<small>@simply.lexmarie</small></span>
+      </a>
+      <a class="sbtn ig" href="https://www.instagram.com/a.lexie.a" target="_blank" rel="noopener">
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor" stroke="none"/></svg></span>
+        <span>Instagram<small>@a.lexie.a</small></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-title hand"><span class="u">a little about me</span></div>
+    <div class="sec-sub">get to know your girl</div>
+    <div class="note">
+      <p>I'm Lex! 👋 I got <b>tired</b> of cute clothes that never fit right up top…</p>
+      <p>so now I share honest try-ons for us fuller-bust girls — the swim, the dresses, the everyday stuff that <b>actually works</b>.</p>
+      <p>No filters on the truth — just real fit &amp; finds worth your $$ 🎀</p>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-title hand"><span class="u">shop my faves</span></div>
+    <div class="sec-sub">tap to shop ♡</div>
+    <div class="grid">
+      <a class="pcard" href="https://www.shopltk.com/explore/lex_marie_big_bust_fashion" target="_blank" rel="noopener">
+        <span class="stk">🛍️</span>
+        <div class="thumb">👗</div><h3>Shop My LTK</h3><small>all my looks</small>
+      </a>
+      <a class="pcard" href="https://www.tiktok.com/@simply.lexmarie" target="_blank" rel="noopener">
+        <span class="stk">🎬</span>
+        <div class="thumb">🎥</div><h3>Latest Try-Ons</h3><small>newest hauls</small>
+      </a>
+      <a class="pcard" href="https://www.shopltk.com/explore/lex_marie_big_bust_fashion" target="_blank" rel="noopener">
+        <span class="stk">💦</span>
+        <div class="thumb">👙</div><h3>Swim Reviews</h3><small>fits that support</small>
+      </a>
+      <a class="pcard" href="https://www.shopltk.com/explore/lex_marie_big_bust_fashion" target="_blank" rel="noopener">
+        <span class="stk">⭐</span>
+        <div class="thumb">🧡</div><h3>Fave Finds</h3><small>tried &amp; loved</small>
+      </a>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-title hand"><span class="u">let's chat!</span></div>
+    <div class="sec-sub">brand collabs + hi's welcome</div>
+    <div class="form-card">
+      <p class="lead hand">Brand collab? <b>yes please!</b> 💌</p>
+      <p class="subl">Or just say hi — it goes right to my inbox.</p>
+      <form id="cf">
+        <div><label>your name</label><input name="name" required placeholder="first & last" /></div>
+        <div><label>email</label><input type="email" name="email" required placeholder="you@email.com" /></div>
+        <div><label>subject</label><input name="subject" required placeholder="collab · question · hi" /></div>
+        <div><label>message</label><textarea name="message" required placeholder="tell me about it…"></textarea></div>
+        <button class="send" type="submit">Send it! 💕</button>
+        <p class="note-s">goes to simplylexmarie@gmail.com</p>
+        <p class="status hand" id="st"></p>
+      </form>
+    </div>
+  </div>
+
+  <footer>
+    <div class="foot-h hand">xoxo, Lex 🎀</div>
+    <div class="foot-s">made with love · 2026</div>
+  </footer>
+
+</div>
+
+<script>
+  const f=document.getElementById('cf'),s=document.getElementById('st'),E='simplylexmarie@gmail.com';
+  f.addEventListener('submit',e=>{e.preventDefault();
+    const sub=encodeURIComponent('[Website] '+f.subject.value+' — from '+f.name.value);
+    const b=encodeURIComponent('Name: '+f.name.value+'\nEmail: '+f.email.value+'\n\n'+f.message.value);
+    window.location.href='mailto:'+E+'?subject='+sub+'&body='+b;
+    s.textContent='opening your email… 💌';s.classList.add('show');});
+</script>
+</body>
+</html>

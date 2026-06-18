@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Dresses & Going Out · Alexia Rucker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=Dancing+Script:wght@600;700&family=Caveat:wght@600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --cream:#FBF3EA; --cream2:#FFF9F1;
+    --pink:#FFE2EA; --pink2:#FFD2DE; --hot:#FF5E92;
+    --red:#E63950; --red-deep:#C72C42; --coral:#FF8C5A;
+    --ink:#241619; --paper:#FFFDF7; --muted:#9A7B82;
+    --brown:#A65A52; --peach:#FBE0CC;
+    --hl:#FFC6D7;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:'Archivo',sans-serif;color:var(--ink);line-height:1.6;background:var(--cream);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  a{color:inherit;text-decoration:none}
+  .script-h{font-family:'Dancing Script',cursive;font-weight:700;color:var(--brown);line-height:1.04}
+  .mark{background:linear-gradient(180deg,transparent 12%,var(--hl) 12%,var(--hl) 86%,transparent 86%);padding:0 .12em;display:inline-block}
+
+  .band{width:100%;padding:52px 0;position:relative}
+  .inner{max-width:1080px;margin:0 auto;padding:0 26px}
+  .b-cream{background:var(--cream)} .b-pink{background:var(--pink)}
+
+  .nav{position:sticky;top:0;z-index:60;background:rgba(251,243,234,.85);backdrop-filter:blur(10px);border-bottom:1.5px solid var(--ink)}
+  .nav-in{max-width:1080px;margin:0 auto;padding:11px 22px;display:flex;align-items:center;justify-content:space-between}
+  .nav-brand{font-weight:900;letter-spacing:-.5px;font-size:1.05rem}
+  .nav-brand .dot{color:var(--red)}
+  .back{display:inline-flex;align-items:center;gap:7px;font-size:.82rem;font-weight:600;border:1.5px solid var(--ink);border-radius:999px;padding:6px 14px;transition:.15s}
+  .back:hover{background:var(--ink);color:var(--cream)}
+
+  .pghero{text-align:center;padding:46px 0 8px}
+  .eyebrow{font-family:'Space Mono',monospace;font-size:.72rem;letter-spacing:2px;text-transform:uppercase;color:var(--red);margin-bottom:10px}
+  .pghero h1{font-weight:900;font-size:clamp(2.4rem,6.5vw,4rem);line-height:.98;letter-spacing:-1px;margin-bottom:14px}
+  .pghero h1 .script-h{font-size:1.08em}
+  .pghero p{max-width:520px;margin:0 auto;color:#5a4147;font-size:1.06rem}
+
+  .vgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(232px,1fr));gap:20px;margin-top:14px}
+  .vcard{background:var(--ink);border-radius:18px;overflow:hidden;position:relative;aspect-ratio:9/16;box-shadow:0 16px 34px -18px rgba(0,0,0,.45);transition:transform .16s}
+  .vcard:hover{transform:translateY(-4px)}
+  .vcard iframe{width:100%;height:100%;border:0;display:block}
+  .vcard.ph{background:linear-gradient(150deg,var(--hot),var(--coral));display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;color:#fff}
+  .vcard.ph .play{width:58px;height:58px;border-radius:50%;background:rgba(255,255,255,.22);display:flex;align-items:center;justify-content:center;backdrop-filter:blur(2px)}
+  .vcard.ph .play svg{width:24px;height:24px;margin-left:3px}
+  .vcard.ph small{font-family:'Space Mono',monospace;font-size:.66rem;letter-spacing:1px;text-transform:uppercase;opacity:.9}
+  .vcard.ph .tt{font-family:'Caveat',cursive;font-size:1.5rem}
+
+  .cta{text-align:center}
+  .cta .script-h{font-size:clamp(1.9rem,5vw,2.7rem);margin-bottom:8px}
+  .cta p{color:#5a4147;margin-bottom:20px}
+  .pill{display:inline-flex;align-items:center;justify-content:center;gap:9px;font-weight:700;font-size:1rem;padding:14px 28px;border-radius:999px;background:var(--red);color:#fff;box-shadow:0 12px 22px -10px rgba(230,57,80,.6);transition:.16s}
+  .pill:hover{transform:translateY(-2px)}
+  .pill svg{width:19px;height:19px}
+  .pill.ghost{background:var(--paper);color:var(--ink);border:1.5px solid var(--pink2);box-shadow:none}
+  .pill.ghost:hover{transform:translateY(-2px);border-color:var(--red)}
+  .cta-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+
+  footer{background:var(--ink);color:var(--cream);text-align:center;padding:34px 22px}
+  footer .fh{font-family:'Dancing Script',cursive;font-weight:700;font-size:1.9rem;color:#fff}
+  footer .fmeta{font-family:'Space Mono',monospace;font-size:.66rem;color:rgba(251,243,234,.55);letter-spacing:1px;margin-top:8px}
+
+  @media(max-width:560px){
+    .vgrid{grid-template-columns:1fr 1fr;gap:12px}
+    .band{padding:40px 0}
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-in">
+    <a class="nav-brand" href="index.html">ALEXIA<span class="dot">.</span></a>
+    <a class="back" href="index.html">&larr; back to home</a>
+  </div>
+</nav>
+
+<section class="band b-cream">
+  <div class="inner pghero">
+    <div class="eyebrow">// the edit</div>
+    <h1>dresses &amp; <span class="script-h">going out</span></h1>
+    <p>Dresses that flatter a <span class="mark">fuller bust</span> and actually turn heads. Tap any video to watch, then shop your favorites.</p>
+  </div>
+</section>
+
+<section class="band b-cream" style="padding-top:6px">
+  <div class="inner">
+    <div class="vgrid">
+      <!-- Real TikToks get embedded here, one .vcard per video:
+           <div class="vcard"><iframe src="https://www.tiktok.com/embed/v2/VIDEO_ID" allowfullscreen scrolling="no" allow="encrypted-media;"></iframe></div>
+           For now these are styled placeholders. -->
+      <div class="vcard ph"><div class="play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div><span class="tt">look #1</span><small>your TikTok here</small></div>
+      <div class="vcard ph"><div class="play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div><span class="tt">look #2</span><small>your TikTok here</small></div>
+      <div class="vcard ph"><div class="play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div><span class="tt">look #3</span><small>your TikTok here</small></div>
+      <div class="vcard ph"><div class="play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div><span class="tt">look #4</span><small>your TikTok here</small></div>
+      <div class="vcard ph"><div class="play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div><span class="tt">look #5</span><small>your TikTok here</small></div>
+      <div class="vcard ph"><div class="play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div><span class="tt">look #6</span><small>your TikTok here</small></div>
+    </div>
+  </div>
+</section>
+
+<section class="band b-pink">
+  <div class="inner cta">
+    <p class="script-h">love one of these?</p>
+    <p>Every dress I show is shoppable on my LTK and Amazon.</p>
+    <div class="cta-btns">
+      <a class="pill" href="https://www.shopltk.com/explore/lex_marie_big_bust_fashion" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+        Shop on LTK
+      </a>
+      <a class="pill ghost" href="AMAZON_STOREFRONT_URL" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2.5 3H4l2.2 12.4a1.5 1.5 0 0 0 1.5 1.2h8.5a1.5 1.5 0 0 0 1.5-1.2L21 7H6"/></svg>
+        Shop on Amazon
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="fh">xo, Lex</div>
+  <div class="fmeta">simply lex marie · @simply.lexmarie</div>
+</footer>
+
+</body>
+</html>
