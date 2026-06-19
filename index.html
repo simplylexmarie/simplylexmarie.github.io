@@ -145,34 +145,6 @@
   .note .nlbl{font-family:'Space Mono',monospace;font-size:.66rem;text-transform:uppercase;letter-spacing:1px;color:var(--red);padding-bottom:6px;border-bottom:1px solid rgba(230,57,80,.16)}
   .note-lines span{display:block;font-family:'Caveat',cursive;font-size:1.8rem;line-height:1;color:var(--ink);padding:18px 0 9px;border-bottom:1px solid rgba(230,57,80,.16)}
 
-  /* ---- interactive sealed letter (about note) ---- */
-  .letter-wrap{position:relative;margin-top:14px;perspective:850px;min-height:190px}
-  .letter-wrap .note{margin-top:0}
-  .envelope,.plane{display:none}
-  .letter-wrap.js .envelope{display:block}
-  .envelope{position:absolute;top:50%;left:50%;width:228px;height:150px;border:none;background:none;padding:0;cursor:pointer;z-index:5;transform-style:preserve-3d;transform:translate(-50%,-50%) rotate(1.4deg);animation:envPing 3s ease-in-out infinite}
-  .envelope:focus-visible{outline:2px solid var(--red);outline-offset:6px;border-radius:11px}
-  .env-back{position:absolute;inset:0;background:var(--paper);border-radius:10px;box-shadow:0 16px 32px -16px rgba(0,0,0,.4)}
-  .env-flap{position:absolute;left:0;top:0;width:100%;height:84px;background:#F6DDC7;clip-path:polygon(0 0,100% 0,50% 100%);transform-origin:top center;transition:transform .55s ease;z-index:2;border-radius:10px 10px 0 0}
-  .env-seal{position:absolute;left:50%;top:62px;width:64px;height:64px;margin:-32px 0 0 -32px;border-radius:50%;background:radial-gradient(circle at 34% 30%,#F46A82,var(--red) 72%);box-shadow:0 5px 12px -4px rgba(199,44,66,.6),inset 0 0 0 3px rgba(255,255,255,.22);display:flex;align-items:center;justify-content:center;z-index:4;transition:transform .55s ease,opacity .55s ease}
-  .env-seal span{font-family:'Caveat',cursive;font-weight:700;color:#fff;font-size:.96rem;line-height:.9;text-align:center}
-  .plane{position:absolute;top:50%;left:50%;width:38px;margin:-19px 0 0 -19px;color:var(--red);opacity:0;z-index:6;pointer-events:none}
-  .letter-wrap.js .plane{display:block}
-  .plane svg{width:100%;height:auto;display:block;filter:drop-shadow(0 4px 4px rgba(0,0,0,.2))}
-
-  .letter-wrap.js #noteCard{opacity:0;transform:scaleY(.12) rotate(1.4deg);transform-origin:top center;pointer-events:none;transition:opacity .5s ease,transform .7s cubic-bezier(.2,.85,.3,1.15)}
-  .letter-wrap.js.revealed #noteCard{opacity:1;transform:scaleY(1) rotate(1.4deg);pointer-events:auto}
-
-  .letter-wrap.open .envelope{animation:none;transform:translate(-50%,-50%) rotate(1.4deg)}
-  .letter-wrap.open .env-seal{transform:translateY(36px) scale(1.18) scaleY(.22);opacity:0}
-  .letter-wrap.open .env-flap{transform:rotateX(-172deg)}
-  .letter-wrap.flying .envelope{opacity:0;transition:opacity .45s ease;pointer-events:none}
-  .letter-wrap.flying .plane{animation:planeFly 1.7s cubic-bezier(.45,.05,.5,.95) forwards}
-
-  @keyframes envPing{0%,84%,100%{transform:translate(-50%,-50%) rotate(1.4deg)}88%{transform:translate(-50%,calc(-50% - 7px)) rotate(1.4deg)}92%{transform:translate(-50%,calc(-50% - 2px)) rotate(1.4deg)}}
-  @keyframes planeFly{0%{opacity:0;transform:translate(0,0) rotate(10deg) scale(.55)}10%{opacity:1}28%{transform:translate(-130px,-64px) rotate(-22deg) scale(1)}48%{transform:translate(34px,-140px) rotate(72deg) scale(1)}68%{transform:translate(164px,-52px) rotate(168deg) scale(1)}84%{opacity:1;transform:translate(58px,16px) rotate(252deg) scale(.9)}96%{transform:translate(2px,52px) rotate(350deg) scale(.68)}100%{opacity:0;transform:translate(0,70px) rotate(360deg) scale(.55)}}
-  @media(prefers-reduced-motion:reduce){.envelope{animation:none}.letter-wrap.flying .plane{animation:none}}
-
   /* ---------- SHOP ---------- */
   .shop-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:30px}
   .shop-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
@@ -358,20 +330,12 @@
       <p>My whole thing is keeping it real: what fits, what doesn't, what's worth your money, and what to grab before it sells out.</p>
       <p>Stick around, shop my finds, and let's make getting dressed feel easy.</p>
     </div>
-    <div class="letter-wrap" id="letterWrap">
-      <button class="envelope" id="envelope" type="button" aria-label="Open the note to self">
-        <span class="env-back"></span>
-        <span class="env-flap"></span>
-        <span class="env-seal"><span>click<br>to open<br>me</span></span>
-      </button>
-      <span class="plane" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 2 2 11l7 2 2 7 3-5 5 3z"/><path d="M9 13 22 2 11 16z" fill="#fff" opacity=".35"/></svg></span>
-      <div class="note" id="noteCard">
-        <div class="nlbl">// note to self</div>
-        <div class="note-lines">
-          <span>you're not "hard to fit"</span>
-          <span>the clothes just had to</span>
-          <span>catch up to you xx</span>
-        </div>
+    <div class="note">
+      <div class="nlbl">// note to self</div>
+      <div class="note-lines">
+        <span>you're not "hard to fit"</span>
+        <span>the clothes just had to</span>
+        <span>catch up to you xx</span>
       </div>
     </div>
   </div>
@@ -487,22 +451,6 @@
       fseq++;
     }, 1750);
   }
-
-  // ---- Interactive sealed letter (about note) ----
-  (function(){
-    const wrap = document.getElementById('letterWrap');
-    const env = document.getElementById('envelope');
-    if(!wrap || !env) return;
-    wrap.classList.add('js');
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    env.addEventListener('click', ()=>{
-      if(wrap.classList.contains('open')) return;
-      if(reduce){ wrap.classList.add('open','flying','revealed'); return; }
-      wrap.classList.add('open');
-      setTimeout(()=>wrap.classList.add('flying'), 520);
-      setTimeout(()=>wrap.classList.add('revealed'), 1900);
-    });
-  })();
 
   // ---- Contact form -> Supabase ----
   const SUPABASE_URL = 'https://rqukbgvfgjvgvjprptcr.supabase.co';
