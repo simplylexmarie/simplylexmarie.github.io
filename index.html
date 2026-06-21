@@ -228,8 +228,11 @@
   @media(prefers-reduced-motion:reduce){.sec-icon{animation:none}}
 
   /* ---------- responsive ---------- */
+  .m-eyebrow{display:none}
   @media(max-width:820px){
-    .hero{grid-template-columns:1fr;gap:40px}
+    .hero{grid-template-columns:1fr;gap:30px}
+    .m-eyebrow{display:flex;order:-2}
+    .hero .kicker:not(.m-eyebrow){display:none}
     .collage{height:500px;order:-1}
     .about{grid-template-columns:1fr;gap:24px}
     .shop-grid{grid-template-columns:1fr 1fr}
@@ -261,6 +264,7 @@
 <section class="band b-cream">
   <div class="inner">
     <div class="hero">
+      <div class="kicker m-eyebrow"><span class="line"></span> welcome to the big bitty bestie community</div>
       <div>
         <div class="kicker"><span class="line"></span> welcome to the big bitty bestie community</div>
         <h1>the fits that <span class="mark serif">actually</span> fit.</h1>
