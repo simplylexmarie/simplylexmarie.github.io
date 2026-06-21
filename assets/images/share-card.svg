@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1200" viewBox="0 0 1200 1200">
+  <rect width="1200" height="1200" fill="#FBF3EA"/>
+  <rect x="40" y="40" width="1120" height="1120" rx="52" fill="#FFFDF7"/>
+  <rect x="40" y="40" width="1120" height="1120" rx="52" fill="none" stroke="#F4C9D4" stroke-width="5"/>
+
+  <path transform="translate(120,128) scale(1.0)" d="M32 49C19 41 12 34 12 25.5 12 19.6 16.4 16 21 16c3.6 0 6.8 2 8.6 5.2.9 1.6 3.9 1.6 4.8 0C36.2 18 39.4 16 43 16c4.6 0 9 3.6 9 9.5C52 34 45 41 32 49Z" fill="#E63950"/>
+  <path transform="translate(1006,132) scale(0.85)" d="M32 49C19 41 12 34 12 25.5 12 19.6 16.4 16 21 16c3.6 0 6.8 2 8.6 5.2.9 1.6 3.9 1.6 4.8 0C36.2 18 39.4 16 43 16c4.6 0 9 3.6 9 9.5C52 34 45 41 32 49Z" fill="#FF8C5A"/>
+  <path transform="translate(128,1004) scale(1.25)" d="M20 6c4 8 10 14 14 14-4 0-10 6-14 14-4-8-10-14-14-14 4 0 10-6 14-14Z" fill="#FF5E92"/>
+  <path transform="translate(1012,998) scale(1.35)" d="M20 6c4 8 10 14 14 14-4 0-10 6-14 14-4-8-10-14-14-14 4 0 10-6 14-14Z" fill="#E63950"/>
+
+  <text x="600" y="350" text-anchor="middle" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="34" font-weight="700" letter-spacing="9" fill="#E63950">@SIMPLY.LEXMARIE</text>
+
+  <text x="600" y="560" text-anchor="middle" font-family="Snell Roundhand, Apple Chancery, cursive" font-weight="bold" font-size="150" fill="#A65A52">Simply</text>
+  <text x="600" y="710" text-anchor="middle" font-family="Snell Roundhand, Apple Chancery, cursive" font-weight="bold" font-size="150" fill="#A65A52">Lex Marie</text>
+
+  <text x="600" y="830" text-anchor="middle" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="36" fill="#6E5258">honest fuller-bust fashion &#8226; real try-ons</text>
+
+  <text x="600" y="940" text-anchor="middle" font-family="Snell Roundhand, Apple Chancery, cursive" font-weight="bold" font-size="58" fill="#E63950">for the Big Bitty Besties</text>
+</svg>
