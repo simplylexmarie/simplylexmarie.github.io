@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex, nofollow" />
+<title>Dashboard · Simply Lex Marie</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet" />
+<style>
+  :root{--cream:#FBF3EA;--paper:#FFFDF7;--pink:#FFE2EA;--pink2:#FFD2DE;--red:#E63950;--red-deep:#C72C42;--ink:#241619;--brown:#A65A52;--muted:#9A7B82}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Archivo',sans-serif;color:var(--ink);background:var(--cream);line-height:1.5;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:640px;margin:0 auto;padding:28px 20px 60px}
+  .brand{font-family:'Dancing Script',cursive;font-weight:700;font-size:2.2rem;color:var(--brown);text-align:center}
+  .sub{text-align:center;color:var(--muted);font-size:.85rem;margin-bottom:24px}
+
+  .card{background:var(--paper);border:1.5px solid var(--pink2);border-radius:18px;padding:24px 22px;margin-bottom:18px}
+  h2{font-size:1.05rem;font-weight:800;margin-bottom:14px;color:var(--red-deep)}
+  label{display:block;font-size:.78rem;font-weight:600;color:var(--muted);margin:14px 0 5px}
+  input,textarea{width:100%;font-family:'Archivo';font-size:.95rem;color:var(--ink);padding:11px 13px;border:1.5px solid var(--pink2);border-radius:11px;background:#fff;transition:.15s}
+  input:focus,textarea:focus{outline:none;border-color:var(--red);box-shadow:0 0 0 3px rgba(230,57,80,.12)}
+  textarea{resize:vertical;min-height:80px}
+  .hint{font-size:.72rem;color:var(--muted);font-style:italic;margin-top:3px}
+  button{font-family:'Archivo';font-weight:800;cursor:pointer;border:none;border-radius:12px;transition:.15s}
+  .btn-primary{background:var(--red);color:#fff;padding:15px;font-size:1rem;width:100%;box-shadow:0 12px 22px -10px rgba(230,57,80,.6)}
+  .btn-primary:hover{transform:translateY(-2px)}
+  .btn-primary:disabled{opacity:.6;cursor:default;transform:none}
+  .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;gap:10px}
+  .linkbtn{background:none;color:var(--muted);font-weight:600;font-size:.82rem;text-decoration:underline;padding:4px}
+  .status{text-align:center;font-weight:600;margin-top:14px;min-height:20px}
+  .status.ok{color:#2f9e44}.status.err{color:var(--red-deep)}
+  .savebar{position:sticky;bottom:0;background:linear-gradient(transparent,var(--cream) 30%);padding:18px 0 0;margin-top:8px}
+  #editor{display:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand">Lex's Dashboard</div>
+  <div class="sub">edit your site, then hit save</div>
+
+  <!-- LOGIN -->
+  <div id="login" class="card">
+    <h2>Log in</h2>
+    <label for="email">Email</label>
+    <input type="email" id="email" placeholder="your@email.com" autocomplete="username" />
+    <label for="password">Password</label>
+    <input type="password" id="password" placeholder="your password" autocomplete="current-password" />
+    <div style="height:14px"></div>
+    <button class="btn-primary" id="loginBtn">Log in</button>
+    <p class="status err" id="loginStatus"></p>
+  </div>
+
+  <!-- EDITOR -->
+  <div id="editor">
+    <div class="topbar">
+      <a class="linkbtn" href="/" target="_blank">↗ view my site</a>
+      <button class="linkbtn" id="logoutBtn">log out</button>
+    </div>
+    <div id="sections"></div>
+    <div class="savebar">
+      <button class="btn-primary" id="saveBtn">Save changes</button>
+      <p class="status" id="saveStatus"></p>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const db = window.supabase.createClient('https://rqukbgvfgjvgvjprptcr.supabase.co','sb_publishable_aVYauYUD9vJksZW6_vpA2w_8gvDN5zV');
+
+  const SECTIONS = [
+    {title:'Your links', fields:[
+      {key:'link_ltk', label:'LTK link'},
+      {key:'link_amazon', label:'Amazon storefront link'},
+      {key:'link_tiktok', label:'TikTok link'},
+      {key:'link_instagram', label:'Instagram link'},
+    ]},
+    {title:'Hero (top of page)', fields:[
+      {key:'hero_eyebrow', label:'Welcome line'},
+      {key:'hero_headline', label:'Headline', big:true, hint:'Wrap a word in *stars* to highlight it, e.g. the fits that *actually* fit.'},
+      {key:'hero_lead', label:'Intro sentence', big:true},
+    ]},
+    {title:'About me', fields:[
+      {key:'about_heading', label:'About heading'},
+      {key:'about_p1', label:'Paragraph 1', big:true, hint:'*stars* = highlight'},
+      {key:'about_p2', label:'Paragraph 2', big:true},
+      {key:'about_p3', label:'Paragraph 3', big:true},
+    ]},
+    {title:'Note to self', fields:[
+      {key:'note_line1', label:'Line 1'},
+      {key:'note_line2', label:'Line 2'},
+      {key:'note_line3', label:'Line 3'},
+    ]},
+  ];
+
+  const DEFAULTS = {
+    link_ltk:'https://www.shopltk.com/explore/lex_marie_big_bust_fashion',
+    link_amazon:'https://www.amazon.com/shop/simply.lexmarie',
+    link_tiktok:'https://www.tiktok.com/@simply.lexmarie',
+    link_instagram:'https://www.instagram.com/a.lexie.a',
+    hero_eyebrow:'welcome to the big bitty bestie community',
+    hero_headline:'the fits that *actually* fit.',
+    hero_lead:"Hi, I'm Lex! Try-ons, swimsuits & real-girl reviews for those of us with a fuller bust. No filters on the truth.",
+    about_heading:'your new fitting-room bestie',
+    about_p1:"I'm a fashion girl who got *tired* of cute pieces that just… didn't fit right up top. So I started sharing honest try-ons for those of us with a fuller bust: the swim, the dresses, the everyday outfits that actually work.",
+    about_p2:"My whole thing is keeping it real: what fits, what doesn't, what's worth your money, and what to grab before it sells out.",
+    about_p3:"Stick around, shop my finds, and let's make getting dressed feel easy.",
+    note_line1:"you're not \"hard to fit\"",
+    note_line2:'the clothes just had to',
+    note_line3:'catch up to you xx',
+  };
+
+  const loginView=document.getElementById('login');
+  const editorView=document.getElementById('editor');
+  const loginStatus=document.getElementById('loginStatus');
+  const saveStatus=document.getElementById('saveStatus');
+
+  function buildForm(){
+    const c=document.getElementById('sections'); c.innerHTML='';
+    SECTIONS.forEach(sec=>{
+      const card=document.createElement('div'); card.className='card';
+      card.innerHTML='<h2>'+sec.title+'</h2>';
+      sec.fields.forEach(f=>{
+        const lab=document.createElement('label'); lab.textContent=f.label; lab.setAttribute('for',f.key);
+        const inp=document.createElement(f.big?'textarea':'input'); inp.id=f.key;
+        if(!f.big) inp.type='text';
+        card.appendChild(lab); card.appendChild(inp);
+        if(f.hint){const h=document.createElement('p');h.className='hint';h.textContent=f.hint;card.appendChild(h);}
+      });
+      c.appendChild(card);
+    });
+  }
+
+  async function loadValues(){
+    const {data} = await db.from('site_content').select('key,value');
+    const saved={}; (data||[]).forEach(r=>saved[r.key]=r.value);
+    SECTIONS.forEach(sec=>sec.fields.forEach(f=>{
+      const el=document.getElementById(f.key);
+      el.value = (saved[f.key]!=null) ? saved[f.key] : (DEFAULTS[f.key]||'');
+    }));
+  }
+
+  async function showEditor(){ loginView.style.display='none'; editorView.style.display='block'; buildForm(); await loadValues(); }
+  function showLogin(){ editorView.style.display='none'; loginView.style.display='block'; }
+
+  document.getElementById('loginBtn').addEventListener('click', async ()=>{
+    loginStatus.textContent='';
+    const email=document.getElementById('email').value.trim();
+    const password=document.getElementById('password').value;
+    const {error}=await db.auth.signInWithPassword({email,password});
+    if(error){ loginStatus.textContent=error.message; return; }
+    showEditor();
+  });
+
+  document.getElementById('logoutBtn').addEventListener('click', async ()=>{ await db.auth.signOut(); showLogin(); });
+
+  document.getElementById('saveBtn').addEventListener('click', async (e)=>{
+    const btn=e.target; btn.disabled=true; btn.textContent='Saving…'; saveStatus.className='status';
+    const rows=[];
+    SECTIONS.forEach(sec=>sec.fields.forEach(f=>rows.push({key:f.key, value:document.getElementById(f.key).value})));
+    const {error}=await db.from('site_content').upsert(rows,{onConflict:'key'});
+    btn.disabled=false; btn.textContent='Save changes';
+    if(error){ saveStatus.textContent='Something went wrong: '+error.message; saveStatus.className='status err'; }
+    else { saveStatus.textContent='Saved! Your site is updated. ✓'; saveStatus.className='status ok'; }
+  });
+
+  (async function(){
+    const {data:{session}} = await db.auth.getSession();
+    if(session) showEditor(); else showLogin();
+  })();
+</script>
+</body>
+</html>
