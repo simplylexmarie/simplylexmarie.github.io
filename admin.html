@@ -16,11 +16,10 @@
   .wrap{max-width:640px;margin:0 auto;padding:28px 20px 60px}
   .brand{font-family:'Dancing Script',cursive;font-weight:700;font-size:2.2rem;color:var(--brown);text-align:center}
   .sub{text-align:center;color:var(--muted);font-size:.85rem;margin-bottom:24px}
-
   .card{background:var(--paper);border:1.5px solid var(--pink2);border-radius:18px;padding:24px 22px;margin-bottom:18px}
   h2{font-size:1.05rem;font-weight:800;margin-bottom:14px;color:var(--red-deep)}
   label{display:block;font-size:.78rem;font-weight:600;color:var(--muted);margin:14px 0 5px}
-  input,textarea{width:100%;font-family:'Archivo';font-size:.95rem;color:var(--ink);padding:11px 13px;border:1.5px solid var(--pink2);border-radius:11px;background:#fff;transition:.15s}
+  input[type=text],input[type=email],input[type=password],textarea{width:100%;font-family:'Archivo';font-size:.95rem;color:var(--ink);padding:11px 13px;border:1.5px solid var(--pink2);border-radius:11px;background:#fff;transition:.15s}
   input:focus,textarea:focus{outline:none;border-color:var(--red);box-shadow:0 0 0 3px rgba(230,57,80,.12)}
   textarea{resize:vertical;min-height:80px}
   .hint{font-size:.72rem;color:var(--muted);font-style:italic;margin-top:3px}
@@ -34,6 +33,15 @@
   .status.ok{color:#2f9e44}.status.err{color:var(--red-deep)}
   .savebar{position:sticky;bottom:0;background:linear-gradient(transparent,var(--cream) 30%);padding:18px 0 0;margin-top:8px}
   #editor{display:none}
+  /* photos */
+  .upload-btn{display:inline-block;background:var(--ink);color:#fff;font-weight:700;font-size:.85rem;padding:10px 16px;border-radius:10px;cursor:pointer;margin-top:10px}
+  .upload-btn:hover{background:var(--red)}
+  .photo-main{display:flex;align-items:center;gap:16px}
+  .photo-main img{width:96px;height:128px;object-fit:cover;border-radius:10px;border:1.5px solid var(--pink2);background:var(--pink)}
+  .film-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(78px,1fr));gap:10px;margin-top:8px}
+  .film-thumb{position:relative}
+  .film-thumb img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:9px;border:1.5px solid var(--pink2);display:block}
+  .film-thumb .del{position:absolute;top:-7px;right:-7px;width:24px;height:24px;border-radius:50%;background:var(--red);color:#fff;font-size:1rem;font-weight:800;line-height:1;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 8px -2px rgba(0,0,0,.4)}
 </style>
 </head>
 <body>
@@ -59,17 +67,34 @@
       <a class="linkbtn" href="/" target="_blank">↗ view my site</a>
       <button class="linkbtn" id="logoutBtn">log out</button>
     </div>
+
+    <div class="card">
+      <h2>Photos</h2>
+      <label>Main photo (the big polaroid)</label>
+      <div class="photo-main">
+        <img id="mainPreview" alt="main photo" />
+        <label class="upload-btn">Change photo<input type="file" id="mainFile" accept="image/*" hidden></label>
+      </div>
+      <label style="margin-top:22px">Film-strip photos</label>
+      <p class="hint">The little photos that rotate next to your main photo. Add or remove anytime — changes save instantly.</p>
+      <div id="filmGrid" class="film-grid"></div>
+      <label class="upload-btn" style="margin-top:12px">+ Add film photo<input type="file" id="filmFile" accept="image/*" hidden></label>
+      <p class="status" id="photoStatus"></p>
+    </div>
+
     <div id="sections"></div>
     <div class="savebar">
-      <button class="btn-primary" id="saveBtn">Save changes</button>
+      <button class="btn-primary" id="saveBtn">Save text &amp; links</button>
       <p class="status" id="saveStatus"></p>
     </div>
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
   const db = window.supabase.createClient('https://rqukbgvfgjvgvjprptcr.supabase.co','sb_publishable_aVYauYUD9vJksZW6_vpA2w_8gvDN5zV');
+  const STORE = db.storage.from('photos');
 
   const SECTIONS = [
     {title:'Your links', fields:[
@@ -85,7 +110,7 @@
     ]},
     {title:'About me', fields:[
       {key:'about_heading', label:'About heading'},
-      {key:'about_p1', label:'Paragraph 1', big:true, hint:'*stars* = highlight'},
+      {key:'about_p1', label:'Paragraph 1', big:true, hint:'*stars* = highlight, in any box'},
       {key:'about_p2', label:'Paragraph 2', big:true},
       {key:'about_p3', label:'Paragraph 3', big:true},
     ]},
@@ -113,20 +138,21 @@
     note_line3:'catch up to you xx',
   };
 
-  const loginView=document.getElementById('login');
-  const editorView=document.getElementById('editor');
-  const loginStatus=document.getElementById('loginStatus');
-  const saveStatus=document.getElementById('saveStatus');
+  const DEF_MAIN='/assets/images/main-photo/alexia-main.jpg';
+  const DEF_FILM=['/assets/images/film-photos/film-01.jpg','/assets/images/film-photos/film-02.jpg','/assets/images/film-photos/film-03.jpg','/assets/images/film-photos/film-04.jpg','/assets/images/film-photos/film-05.jpg','/assets/images/film-photos/film-06.jpg','/assets/images/film-photos/film-07.jpg','/assets/images/film-photos/film-08.jpg','/assets/images/film-photos/film-09.jpg','/assets/images/film-photos/film-10.jpg','/assets/images/film-photos/film-11.jpg'];
+  let mainPhoto=DEF_MAIN, filmPhotos=DEF_FILM.slice();
+
+  const $=id=>document.getElementById(id);
+  const loginView=$('login'), editorView=$('editor');
 
   function buildForm(){
-    const c=document.getElementById('sections'); c.innerHTML='';
+    const c=$('sections'); c.innerHTML='';
     SECTIONS.forEach(sec=>{
       const card=document.createElement('div'); card.className='card';
       card.innerHTML='<h2>'+sec.title+'</h2>';
       sec.fields.forEach(f=>{
         const lab=document.createElement('label'); lab.textContent=f.label; lab.setAttribute('for',f.key);
-        const inp=document.createElement(f.big?'textarea':'input'); inp.id=f.key;
-        if(!f.big) inp.type='text';
+        const inp=document.createElement(f.big?'textarea':'input'); inp.id=f.key; if(!f.big) inp.type='text';
         card.appendChild(lab); card.appendChild(inp);
         if(f.hint){const h=document.createElement('p');h.className='hint';h.textContent=f.hint;card.appendChild(h);}
       });
@@ -134,43 +160,88 @@
     });
   }
 
-  async function loadValues(){
-    const {data} = await db.from('site_content').select('key,value');
-    const saved={}; (data||[]).forEach(r=>saved[r.key]=r.value);
-    SECTIONS.forEach(sec=>sec.fields.forEach(f=>{
-      const el=document.getElementById(f.key);
-      el.value = (saved[f.key]!=null) ? saved[f.key] : (DEFAULTS[f.key]||'');
-    }));
+  function renderPhotos(){
+    $('mainPreview').src=mainPhoto;
+    const g=$('filmGrid'); g.innerHTML='';
+    filmPhotos.forEach((url,idx)=>{
+      const d=document.createElement('div'); d.className='film-thumb';
+      d.innerHTML='<img src="'+url+'" alt=""><button class="del" title="remove" data-idx="'+idx+'">×</button>';
+      g.appendChild(d);
+    });
   }
+
+  async function loadValues(){
+    const {data}=await db.from('site_content').select('key,value');
+    const saved={}; (data||[]).forEach(r=>saved[r.key]=r.value);
+    SECTIONS.forEach(sec=>sec.fields.forEach(f=>{ $(f.key).value=(saved[f.key]!=null)?saved[f.key]:(DEFAULTS[f.key]||''); }));
+    mainPhoto = saved.main_photo || DEF_MAIN;
+    filmPhotos = saved.film_photos ? (()=>{try{return JSON.parse(saved.film_photos)}catch(e){return DEF_FILM.slice()}})() : DEF_FILM.slice();
+    renderPhotos();
+  }
+
+  function pstat(msg,ok){const s=$('photoStatus');s.textContent=msg;s.className='status '+(ok===true?'ok':(ok===false?'err':''));}
+
+  async function processImage(file,maxW){
+    let blob=file;
+    if(/heic|heif/i.test(file.type)||/\.(heic|heif)$/i.test(file.name)){
+      blob=await heic2any({blob:file,toType:'image/jpeg',quality:0.9});
+    }
+    const url=URL.createObjectURL(blob);
+    const img=await new Promise((res,rej)=>{const i=new Image();i.onload=()=>res(i);i.onerror=()=>rej(new Error('Could not read image'));i.src=url;});
+    const scale=Math.min(1,maxW/img.naturalWidth);
+    const w=Math.round(img.naturalWidth*scale), h=Math.round(img.naturalHeight*scale);
+    const c=document.createElement('canvas'); c.width=w; c.height=h;
+    c.getContext('2d').drawImage(img,0,0,w,h); URL.revokeObjectURL(url);
+    return await new Promise(r=>c.toBlob(r,'image/jpeg',0.85));
+  }
+  async function uploadPhoto(blob){
+    const name=Date.now()+'-'+Math.random().toString(36).slice(2,8)+'.jpg';
+    const {error}=await STORE.upload(name,blob,{contentType:'image/jpeg',upsert:false});
+    if(error) throw error;
+    return STORE.getPublicUrl(name).data.publicUrl;
+  }
+  async function saveKey(key,value){ return db.from('site_content').upsert([{key,value}],{onConflict:'key'}); }
+
+  $('mainFile').addEventListener('change', async e=>{
+    const file=e.target.files[0]; e.target.value=''; if(!file) return;
+    pstat('Uploading main photo…');
+    try{ const b=await processImage(file,1000); const url=await uploadPhoto(b); mainPhoto=url; const {error}=await saveKey('main_photo',url); if(error) throw error; renderPhotos(); pstat('Main photo updated ✓',true); }
+    catch(err){ pstat('Upload failed: '+(err.message||err),false); }
+  });
+  $('filmFile').addEventListener('change', async e=>{
+    const file=e.target.files[0]; e.target.value=''; if(!file) return;
+    pstat('Uploading film photo…');
+    try{ const b=await processImage(file,800); const url=await uploadPhoto(b); filmPhotos.push(url); const {error}=await saveKey('film_photos',JSON.stringify(filmPhotos)); if(error) throw error; renderPhotos(); pstat('Film photo added ✓',true); }
+    catch(err){ pstat('Upload failed: '+(err.message||err),false); }
+  });
+  $('filmGrid').addEventListener('click', async e=>{
+    if(!e.target.classList.contains('del')) return;
+    const idx=+e.target.dataset.idx; filmPhotos.splice(idx,1);
+    const {error}=await saveKey('film_photos',JSON.stringify(filmPhotos)); renderPhotos();
+    pstat(error?('Could not remove: '+error.message):'Film photo removed ✓', error?false:true);
+  });
 
   async function showEditor(){ loginView.style.display='none'; editorView.style.display='block'; buildForm(); await loadValues(); }
   function showLogin(){ editorView.style.display='none'; loginView.style.display='block'; }
 
-  document.getElementById('loginBtn').addEventListener('click', async ()=>{
-    loginStatus.textContent='';
-    const email=document.getElementById('email').value.trim();
-    const password=document.getElementById('password').value;
-    const {error}=await db.auth.signInWithPassword({email,password});
-    if(error){ loginStatus.textContent=error.message; return; }
+  $('loginBtn').addEventListener('click', async ()=>{
+    $('loginStatus').textContent='';
+    const {error}=await db.auth.signInWithPassword({email:$('email').value.trim(),password:$('password').value});
+    if(error){ $('loginStatus').textContent=error.message; return; }
     showEditor();
   });
+  $('logoutBtn').addEventListener('click', async ()=>{ await db.auth.signOut(); showLogin(); });
 
-  document.getElementById('logoutBtn').addEventListener('click', async ()=>{ await db.auth.signOut(); showLogin(); });
-
-  document.getElementById('saveBtn').addEventListener('click', async (e)=>{
-    const btn=e.target; btn.disabled=true; btn.textContent='Saving…'; saveStatus.className='status';
-    const rows=[];
-    SECTIONS.forEach(sec=>sec.fields.forEach(f=>rows.push({key:f.key, value:document.getElementById(f.key).value})));
+  $('saveBtn').addEventListener('click', async e=>{
+    const btn=e.target; btn.disabled=true; btn.textContent='Saving…'; const st=$('saveStatus'); st.className='status';
+    const rows=[]; SECTIONS.forEach(sec=>sec.fields.forEach(f=>rows.push({key:f.key,value:$(f.key).value})));
     const {error}=await db.from('site_content').upsert(rows,{onConflict:'key'});
-    btn.disabled=false; btn.textContent='Save changes';
-    if(error){ saveStatus.textContent='Something went wrong: '+error.message; saveStatus.className='status err'; }
-    else { saveStatus.textContent='Saved! Your site is updated. ✓'; saveStatus.className='status ok'; }
+    btn.disabled=false; btn.textContent='Save text & links';
+    if(error){ st.textContent='Something went wrong: '+error.message; st.className='status err'; }
+    else { st.textContent='Saved! Your site is updated. ✓'; st.className='status ok'; }
   });
 
-  (async function(){
-    const {data:{session}} = await db.auth.getSession();
-    if(session) showEditor(); else showLogin();
-  })();
+  (async function(){ const {data:{session}}=await db.auth.getSession(); if(session) showEditor(); else showLogin(); })();
 </script>
 </body>
 </html>

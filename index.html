@@ -326,7 +326,7 @@
 
         <div class="pola main">
           <div class="tape t-top"></div>
-          <div class="pmedia"><img src="assets/images/main-photo/alexia-main.jpg" alt="Alexia Rucker"
+          <div class="pmedia"><img data-mainphoto src="assets/images/main-photo/alexia-main.jpg" alt="Alexia Rucker"
                onerror="this.outerHTML='&lt;div class=\'pfallback\'&gt;A&lt;/div&gt;'"></div>
           <div class="cap">that's me</div>
         </div>
@@ -461,42 +461,50 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-  const fslots = [...document.querySelectorAll('.booth .fslot')].map(slot=>({
-    imgs: slot.querySelectorAll('.fslide'), i: 0
-  }));
-  let fseq = 0;
-  if(fslots.length){
-    setInterval(()=>{
-      const f = fslots[fseq % fslots.length];
-      if(f.imgs.length > 1){
-        f.imgs[f.i].classList.remove('on');
-        f.i = (f.i + 1) % f.imgs.length;
-        f.imgs[f.i].classList.add('on');
-      }
-      fseq++;
-    }, 1750);
+  // ---- film strip ----
+  function buildBooth(photos){
+    const booth=document.querySelector('.booth');
+    if(!booth||!photos||!photos.length) return;
+    const N=4, frames=Array.from({length:N},()=>[]);
+    photos.forEach((p,i)=>frames[i%N].push(p));
+    booth.innerHTML=frames.filter(fr=>fr.length).map(fr=>
+      '<div class="fslot">'+fr.map((u,j)=>'<img class="fslide'+(j===0?' on':'')+'" src="'+u+'" alt="" loading="lazy">').join('')+'</div>'
+    ).join('');
+  }
+  function startBoothRotation(){
+    const fslots=[...document.querySelectorAll('.booth .fslot')].map(slot=>({imgs:slot.querySelectorAll('.fslide'),i:0}));
+    let fseq=0;
+    if(fslots.length){
+      setInterval(()=>{
+        const f=fslots[fseq%fslots.length];
+        if(f.imgs.length>1){ f.imgs[f.i].classList.remove('on'); f.i=(f.i+1)%f.imgs.length; f.imgs[f.i].classList.add('on'); }
+        fseq++;
+      },1750);
+    }
   }
 
-  // ---- Contact form -> Supabase ----
+  // ---- Supabase ----
   const SUPABASE_URL = 'https://rqukbgvfgjvgvjprptcr.supabase.co';
   const SUPABASE_KEY = 'sb_publishable_aVYauYUD9vJksZW6_vpA2w_8gvDN5zV';
   const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
   // ---- Live content from the admin dashboard ----
   (async function(){
+    let film=null;
     try{
       const {data} = await db.from('site_content').select('key,value');
-      if(!data || !data.length) return;
-      const m={}; data.forEach(r=>m[r.key]=r.value);
+      const m={}; (data||[]).forEach(r=>m[r.key]=r.value);
       const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
       document.querySelectorAll('[data-key]').forEach(el=>{
         const v=m[el.dataset.key]; if(v==null) return;
         el.innerHTML=esc(v).replace(/\*([^*]+)\*/g,'<span class="'+(el.dataset.rich||'mark')+'">$1</span>');
       });
-      document.querySelectorAll('[data-link]').forEach(el=>{
-        const v=m['link_'+el.dataset.link]; if(v) el.setAttribute('href',v);
-      });
+      document.querySelectorAll('[data-link]').forEach(el=>{ const v=m['link_'+el.dataset.link]; if(v) el.setAttribute('href',v); });
+      if(m.main_photo){ const im=document.querySelector('[data-mainphoto]'); if(im) im.setAttribute('src',m.main_photo); }
+      if(m.film_photos){ try{ const a=JSON.parse(m.film_photos); if(Array.isArray(a)&&a.length) film=a; }catch(e){} }
     }catch(e){}
+    if(film) buildBooth(film);
+    startBoothRotation();
   })();
 
   const f = document.getElementById('cf');
