@@ -10,83 +10,157 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet" />
 <style>
-  :root{--cream:#FBF3EA;--paper:#FFFDF7;--pink:#FFE2EA;--pink2:#FFD2DE;--red:#E63950;--red-deep:#C72C42;--ink:#241619;--brown:#A65A52;--muted:#9A7B82}
+  :root{--cream:#FBF3EA;--paper:#FFFFFF;--pink:#FFE2EA;--pink2:#FFD2DE;--red:#E63950;--red-deep:#C72C42;--ink:#241619;--brown:#A65A52;--muted:#9A7B82;--line:#F0DDE2}
   *{box-sizing:border-box;margin:0;padding:0}
   body{font-family:'Archivo',sans-serif;color:var(--ink);background:var(--cream);line-height:1.5;-webkit-font-smoothing:antialiased}
-  .wrap{max-width:640px;margin:0 auto;padding:28px 20px 60px}
-  .brand{font-family:'Dancing Script',cursive;font-weight:700;font-size:2.2rem;color:var(--brown);text-align:center}
-  .sub{text-align:center;color:var(--muted);font-size:.85rem;margin-bottom:24px}
-  .card{background:var(--paper);border:1.5px solid var(--pink2);border-radius:18px;padding:24px 22px;margin-bottom:18px}
-  h2{font-size:1.05rem;font-weight:800;margin-bottom:14px;color:var(--red-deep)}
-  label{display:block;font-size:.78rem;font-weight:600;color:var(--muted);margin:14px 0 5px}
-  input[type=text],input[type=email],input[type=password],textarea{width:100%;font-family:'Archivo';font-size:.95rem;color:var(--ink);padding:11px 13px;border:1.5px solid var(--pink2);border-radius:11px;background:#fff;transition:.15s}
+  button{font-family:inherit;cursor:pointer;border:none;border-radius:12px;transition:.15s}
+
+  /* login */
+  #login{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+  .login-card{background:var(--paper);border:1.5px solid var(--pink2);border-radius:22px;padding:34px 28px;width:100%;max-width:380px;box-shadow:0 24px 50px -28px rgba(199,44,66,.35)}
+  .login-card .brand{font-family:'Dancing Script',cursive;font-weight:700;font-size:2.3rem;color:var(--brown);text-align:center}
+  .login-card .sub{text-align:center;color:var(--muted);font-size:.85rem;margin-bottom:22px}
+  label{display:block;font-size:.74rem;font-weight:700;color:var(--muted);margin:14px 0 5px;text-transform:uppercase;letter-spacing:.5px}
+  input[type=text],input[type=email],input[type=password],textarea{width:100%;font-family:inherit;font-size:.95rem;color:var(--ink);padding:11px 13px;border:1.5px solid var(--pink2);border-radius:11px;background:#fff;transition:.15s}
   input:focus,textarea:focus{outline:none;border-color:var(--red);box-shadow:0 0 0 3px rgba(230,57,80,.12)}
   textarea{resize:vertical;min-height:80px}
+  .btn-primary{background:var(--red);color:#fff;padding:14px;font-size:1rem;font-weight:800;width:100%;box-shadow:0 12px 22px -10px rgba(230,57,80,.6)}
+  .btn-primary:hover{transform:translateY(-2px)} .btn-primary:disabled{opacity:.6;transform:none;cursor:default}
+
+  /* app shell */
+  #app{display:none;min-height:100vh}
+  .shell{display:flex;min-height:100vh}
+  .side{width:230px;flex:none;background:var(--paper);border-right:1.5px solid var(--line);display:flex;flex-direction:column;padding:22px 16px;position:sticky;top:0;height:100vh}
+  .side .logo{font-family:'Dancing Script',cursive;font-weight:700;font-size:1.7rem;color:var(--brown);padding:0 8px 18px;display:flex;align-items:center;gap:8px}
+  .side .logo svg{width:26px;height:26px}
+  .nav{display:flex;flex-direction:column;gap:4px}
+  .nav button{display:flex;align-items:center;gap:11px;background:none;color:var(--ink);font-weight:600;font-size:.92rem;padding:11px 13px;border-radius:12px;text-align:left;width:100%}
+  .nav button svg{width:19px;height:19px;flex:none;color:var(--muted)}
+  .nav button:hover{background:var(--cream)}
+  .nav button.active{background:var(--ink);color:#fff}
+  .nav button.active svg{color:#fff}
+  .side .logout{margin-top:auto;color:var(--muted);font-size:.82rem;font-weight:600;text-decoration:underline;background:none;text-align:left;padding:10px 13px}
+
+  .main{flex:1;min-width:0;padding:30px 34px 70px}
+  .head{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-bottom:26px;flex-wrap:wrap}
+  .head h1{font-weight:900;font-size:1.7rem;letter-spacing:-.5px}
+  .head .savewrap{display:flex;align-items:center;gap:12px}
+  .head .save{background:var(--red);color:#fff;font-weight:800;font-size:.9rem;padding:11px 20px;border-radius:11px;box-shadow:0 10px 20px -10px rgba(230,57,80,.6)}
+  .head .save:hover{transform:translateY(-2px)} .head .save:disabled{opacity:.6;transform:none}
+  .savemsg{font-size:.82rem;font-weight:700}.savemsg.ok{color:#2f9e44}.savemsg.err{color:var(--red-deep)}
+
+  .page{display:none}.page.active{display:block}
+  .grid{display:grid;gap:18px}
+  .card{background:var(--paper);border:1.5px solid var(--line);border-radius:18px;padding:22px 20px}
+  .card h2{font-size:1.02rem;font-weight:800;margin-bottom:4px;color:var(--ink)}
+  .card .desc{font-size:.8rem;color:var(--muted);margin-bottom:12px}
   .hint{font-size:.72rem;color:var(--muted);font-style:italic;margin-top:3px}
-  button{font-family:'Archivo';font-weight:800;cursor:pointer;border:none;border-radius:12px;transition:.15s}
-  .btn-primary{background:var(--red);color:#fff;padding:15px;font-size:1rem;width:100%;box-shadow:0 12px 22px -10px rgba(230,57,80,.6)}
-  .btn-primary:hover{transform:translateY(-2px)}
-  .btn-primary:disabled{opacity:.6;cursor:default;transform:none}
-  .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;gap:10px}
-  .linkbtn{background:none;color:var(--muted);font-weight:600;font-size:.82rem;text-decoration:underline;padding:4px}
-  .status{text-align:center;font-weight:600;margin-top:14px;min-height:20px}
-  .status.ok{color:#2f9e44}.status.err{color:var(--red-deep)}
-  .savebar{position:sticky;bottom:0;background:linear-gradient(transparent,var(--cream) 30%);padding:18px 0 0;margin-top:8px}
-  #editor{display:none}
-  /* photos */
-  .upload-btn{display:inline-block;background:var(--ink);color:#fff;font-weight:700;font-size:.85rem;padding:10px 16px;border-radius:10px;cursor:pointer;margin-top:10px}
+  .status{font-weight:700;margin-top:12px;min-height:18px;font-size:.85rem}.status.ok{color:#2f9e44}.status.err{color:var(--red-deep)}
+
+  .upload-btn{display:inline-block;background:var(--ink);color:#fff;font-weight:700;font-size:.84rem;padding:10px 16px;border-radius:10px;cursor:pointer;margin-top:10px}
   .upload-btn:hover{background:var(--red)}
   .photo-main{display:flex;align-items:center;gap:16px}
   .photo-main img{width:96px;height:128px;object-fit:cover;border-radius:10px;border:1.5px solid var(--pink2);background:var(--pink)}
-  .film-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(78px,1fr));gap:10px;margin-top:8px}
+  .film-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:10px;margin-top:8px}
   .film-thumb{position:relative}
   .film-thumb img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:9px;border:1.5px solid var(--pink2);display:block}
-  .film-thumb .del{position:absolute;top:-7px;right:-7px;width:24px;height:24px;border-radius:50%;background:var(--red);color:#fff;font-size:1rem;font-weight:800;line-height:1;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 8px -2px rgba(0,0,0,.4)}
+  .film-thumb .del{position:absolute;top:-7px;right:-7px;width:24px;height:24px;border-radius:50%;background:var(--red);color:#fff;font-size:1rem;font-weight:800;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 8px -2px rgba(0,0,0,.4)}
+  .share-preview{display:flex;gap:14px;align-items:center;background:var(--cream);border-radius:12px;padding:12px;margin-top:6px}
+  .share-preview img{width:84px;height:84px;object-fit:cover;border-radius:10px;flex:none}
+  .note-box{background:#FFF6E9;border:1px solid #F4D9A8;border-radius:12px;padding:12px 14px;font-size:.82rem;color:#7a5a2e;margin-top:12px}
+  a.outlink{color:var(--red);font-weight:700;text-decoration:underline}
+
+  @media(max-width:760px){
+    .shell{flex-direction:column}
+    .side{width:auto;height:auto;position:static;flex-direction:row;align-items:center;gap:6px;overflow-x:auto;border-right:none;border-bottom:1.5px solid var(--line);padding:12px}
+    .side .logo{display:none}.side .logout{margin:0}
+    .nav{flex-direction:row;gap:4px}
+    .nav button{padding:9px 12px;white-space:nowrap}
+    .main{padding:22px 18px 60px}
+  }
 </style>
 </head>
 <body>
-<div class="wrap">
-  <div class="brand">Lex's Dashboard</div>
-  <div class="sub">edit your site, then hit save</div>
 
-  <!-- LOGIN -->
-  <div id="login" class="card">
-    <h2>Log in</h2>
+<!-- LOGIN -->
+<div id="login">
+  <div class="login-card">
+    <div class="brand">Lex's Dashboard</div>
+    <div class="sub">log in to edit your site</div>
     <label for="email">Email</label>
-    <input type="email" id="email" placeholder="your@email.com" autocomplete="username" />
+    <input type="email" id="email" autocomplete="username" />
     <label for="password">Password</label>
-    <input type="password" id="password" placeholder="your password" autocomplete="current-password" />
-    <div style="height:14px"></div>
+    <input type="password" id="password" autocomplete="current-password" />
+    <div style="height:16px"></div>
     <button class="btn-primary" id="loginBtn">Log in</button>
-    <p class="status err" id="loginStatus"></p>
+    <p class="status err" id="loginStatus" style="text-align:center"></p>
   </div>
+</div>
 
-  <!-- EDITOR -->
-  <div id="editor">
-    <div class="topbar">
-      <a class="linkbtn" href="/" target="_blank">↗ view my site</a>
-      <button class="linkbtn" id="logoutBtn">log out</button>
-    </div>
+<!-- APP -->
+<div id="app">
+  <div class="shell">
+    <aside class="side">
+      <div class="logo"><svg viewBox="0 0 64 64"><rect width="64" height="64" rx="15" fill="#FFE2EA"/><path d="M32 49C19 41 12 34 12 25.5 12 19.6 16.4 16 21 16c3.6 0 6.8 2 8.6 5.2.9 1.6 3.9 1.6 4.8 0C36.2 18 39.4 16 43 16c4.6 0 9 3.6 9 9.5C52 34 45 41 32 49Z" fill="#E63950"/></svg> Lex</div>
+      <nav class="nav">
+        <button data-page="photos" class="active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"/><circle cx="9" cy="11" r="2"/><path d="M21 16l-5-4-9 7"/></svg> Photos</button>
+        <button data-page="content"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h10"/></svg> Text</button>
+        <button data-page="links"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 15l6-6M10 7l1-1a4 4 0 0 1 6 6l-1 1M14 17l-1 1a4 4 0 0 1-6-6l1-1"/></svg> Links</button>
+        <button data-page="seo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg> SEO</button>
+        <button data-page="analytics"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg> Analytics</button>
+      </nav>
+      <button class="logout" id="logoutBtn">↩ log out</button>
+    </aside>
 
-    <div class="card">
-      <h2>Photos</h2>
-      <label>Main photo (the big polaroid)</label>
-      <div class="photo-main">
-        <img id="mainPreview" alt="main photo" />
-        <label class="upload-btn">Change photo<input type="file" id="mainFile" accept="image/*" hidden></label>
+    <main class="main">
+      <div class="head">
+        <h1>Welcome back 👋</h1>
+        <div class="savewrap">
+          <span class="savemsg" id="saveMsg"></span>
+          <a class="save" href="/" target="_blank" style="background:var(--ink);text-decoration:none">↗ View site</a>
+          <button class="save" id="saveBtn">Save changes</button>
+        </div>
       </div>
-      <label style="margin-top:22px">Film-strip photos</label>
-      <p class="hint">The little photos that rotate next to your main photo. Add or remove anytime — changes save instantly.</p>
-      <div id="filmGrid" class="film-grid"></div>
-      <label class="upload-btn" style="margin-top:12px">+ Add film photo<input type="file" id="filmFile" accept="image/*" hidden></label>
-      <p class="status" id="photoStatus"></p>
-    </div>
 
-    <div id="sections"></div>
-    <div class="savebar">
-      <button class="btn-primary" id="saveBtn">Save text &amp; links</button>
-      <p class="status" id="saveStatus"></p>
-    </div>
+      <!-- PHOTOS -->
+      <section class="page active" id="page-photos">
+        <div class="grid">
+          <div class="card">
+            <h2>Main photo</h2>
+            <div class="desc">the big polaroid at the top of your site</div>
+            <div class="photo-main">
+              <img id="mainPreview" alt="main photo" />
+              <label class="upload-btn">Change photo<input type="file" id="mainFile" accept="image/*" hidden></label>
+            </div>
+          </div>
+          <div class="card">
+            <h2>Film-strip photos</h2>
+            <div class="desc">the little photos that rotate next to your main photo — changes save instantly</div>
+            <div id="filmGrid" class="film-grid"></div>
+            <label class="upload-btn" style="margin-top:12px">+ Add film photo<input type="file" id="filmFile" accept="image/*" hidden></label>
+            <p class="status" id="photoStatus"></p>
+          </div>
+        </div>
+      </section>
+
+      <!-- CONTENT -->
+      <section class="page" id="page-content"></section>
+      <!-- LINKS -->
+      <section class="page" id="page-links"></section>
+      <!-- SEO -->
+      <section class="page" id="page-seo"></section>
+
+      <!-- ANALYTICS -->
+      <section class="page" id="page-analytics">
+        <div class="card">
+          <h2>Traffic &amp; visitors</h2>
+          <div class="desc">see how many people visit your site, where they come from, and which links they tap</div>
+          <p id="gaStatus" style="margin:6px 0 12px;font-weight:700"></p>
+          <a class="outlink" href="https://analytics.google.com" target="_blank">↗ Open Google Analytics</a>
+          <div class="note-box">Once Google Analytics is connected, all your visitor stats live in the Google Analytics site (link above). Give it a day after launch to start showing data.</div>
+        </div>
+      </section>
+    </main>
   </div>
 </div>
 
@@ -95,31 +169,39 @@
 <script>
   const db = window.supabase.createClient('https://rqukbgvfgjvgvjprptcr.supabase.co','sb_publishable_aVYauYUD9vJksZW6_vpA2w_8gvDN5zV');
   const STORE = db.storage.from('photos');
+  const $=id=>document.getElementById(id);
 
-  const SECTIONS = [
-    {title:'Your links', fields:[
-      {key:'link_ltk', label:'LTK link'},
-      {key:'link_amazon', label:'Amazon storefront link'},
-      {key:'link_tiktok', label:'TikTok link'},
-      {key:'link_instagram', label:'Instagram link'},
-    ]},
-    {title:'Hero (top of page)', fields:[
-      {key:'hero_eyebrow', label:'Welcome line'},
-      {key:'hero_headline', label:'Headline', big:true, hint:'Wrap a word in *stars* to highlight it, e.g. the fits that *actually* fit.'},
-      {key:'hero_lead', label:'Intro sentence', big:true},
-    ]},
-    {title:'About me', fields:[
-      {key:'about_heading', label:'About heading'},
-      {key:'about_p1', label:'Paragraph 1', big:true, hint:'*stars* = highlight, in any box'},
-      {key:'about_p2', label:'Paragraph 2', big:true},
-      {key:'about_p3', label:'Paragraph 3', big:true},
-    ]},
-    {title:'Note to self', fields:[
-      {key:'note_line1', label:'Line 1'},
-      {key:'note_line2', label:'Line 2'},
-      {key:'note_line3', label:'Line 3'},
-    ]},
-  ];
+  const GROUPS = {
+    content:[
+      {title:'Hero (top of page)', fields:[
+        {key:'hero_eyebrow',label:'Welcome line'},
+        {key:'hero_headline',label:'Headline',big:true,hint:'Wrap a word in *stars* to highlight it, e.g. the fits that *actually* fit.'},
+        {key:'hero_lead',label:'Intro sentence',big:true},
+      ]},
+      {title:'About me', fields:[
+        {key:'about_heading',label:'About heading'},
+        {key:'about_p1',label:'Paragraph 1',big:true,hint:'*stars* = highlight, works in any box'},
+        {key:'about_p2',label:'Paragraph 2',big:true},
+        {key:'about_p3',label:'Paragraph 3',big:true},
+      ]},
+      {title:'Note to self', fields:[
+        {key:'note_line1',label:'Line 1'},{key:'note_line2',label:'Line 2'},{key:'note_line3',label:'Line 3'},
+      ]},
+    ],
+    links:[
+      {title:'Your links', fields:[
+        {key:'link_ltk',label:'LTK link'},{key:'link_amazon',label:'Amazon storefront link'},
+        {key:'link_tiktok',label:'TikTok link'},{key:'link_instagram',label:'Instagram link'},
+      ]},
+    ],
+    seo:[
+      {title:'Homepage search info', fields:[
+        {key:'seo_title',label:'Page title',hint:'shows in the browser tab and Google search results'},
+        {key:'seo_description',label:'Meta description',big:true,hint:'the blurb under your link in Google search'},
+      ]},
+    ],
+  };
+  const ALL = [].concat(...Object.values(GROUPS)).flatMap(g=>g.fields);
 
   const DEFAULTS = {
     link_ltk:'https://www.shopltk.com/explore/lex_marie_big_bust_fashion',
@@ -133,115 +215,97 @@
     about_p1:"I'm a fashion girl who got *tired* of cute pieces that just… didn't fit right up top. So I started sharing honest try-ons for those of us with a fuller bust: the swim, the dresses, the everyday outfits that actually work.",
     about_p2:"My whole thing is keeping it real: what fits, what doesn't, what's worth your money, and what to grab before it sells out.",
     about_p3:"Stick around, shop my finds, and let's make getting dressed feel easy.",
-    note_line1:"you're not \"hard to fit\"",
-    note_line2:'the clothes just had to',
-    note_line3:'catch up to you xx',
+    note_line1:"you're not \"hard to fit\"",note_line2:'the clothes just had to',note_line3:'catch up to you xx',
+    seo_title:'Simply Lex Marie · Fuller-Bust Fashion and Honest Try-Ons',
+    seo_description:'Honest fuller-bust fashion reviews, try-ons, swimsuits, and real-fit finds from Lex, for the Big Bitty Besties. Shop my LTK and Amazon, and say hi.',
   };
 
   const DEF_MAIN='/assets/images/main-photo/alexia-main.jpg';
-  const DEF_FILM=['/assets/images/film-photos/film-01.jpg','/assets/images/film-photos/film-02.jpg','/assets/images/film-photos/film-03.jpg','/assets/images/film-photos/film-04.jpg','/assets/images/film-photos/film-05.jpg','/assets/images/film-photos/film-06.jpg','/assets/images/film-photos/film-07.jpg','/assets/images/film-photos/film-08.jpg','/assets/images/film-photos/film-09.jpg','/assets/images/film-photos/film-10.jpg','/assets/images/film-photos/film-11.jpg'];
+  const DEF_FILM=Array.from({length:11},(_,i)=>'/assets/images/film-photos/film-'+String(i+1).padStart(2,'0')+'.jpg');
   let mainPhoto=DEF_MAIN, filmPhotos=DEF_FILM.slice();
 
-  const $=id=>document.getElementById(id);
-  const loginView=$('login'), editorView=$('editor');
-
-  function buildForm(){
-    const c=$('sections'); c.innerHTML='';
-    SECTIONS.forEach(sec=>{
-      const card=document.createElement('div'); card.className='card';
-      card.innerHTML='<h2>'+sec.title+'</h2>';
-      sec.fields.forEach(f=>{
-        const lab=document.createElement('label'); lab.textContent=f.label; lab.setAttribute('for',f.key);
+  function buildPage(name){
+    const c=$('page-'+name); c.innerHTML='';
+    GROUPS[name].forEach(grp=>{
+      const card=document.createElement('div'); card.className='card'; card.style.marginBottom='18px';
+      card.innerHTML='<h2>'+grp.title+'</h2>';
+      grp.fields.forEach(f=>{
+        const lab=document.createElement('label'); lab.textContent=f.label;
         const inp=document.createElement(f.big?'textarea':'input'); inp.id=f.key; if(!f.big) inp.type='text';
         card.appendChild(lab); card.appendChild(inp);
         if(f.hint){const h=document.createElement('p');h.className='hint';h.textContent=f.hint;card.appendChild(h);}
       });
       c.appendChild(card);
     });
+    if(name==='seo'){
+      const sc=document.createElement('div'); sc.className='card';
+      sc.innerHTML='<h2>Share / link preview</h2><div class="desc">what shows when your link is shared</div>'+
+        '<div class="share-preview"><img src="/assets/images/share-image.jpg" alt=""><div><strong>Simply Lex Marie</strong><br><span style="color:var(--muted);font-size:.82rem">simplylexmarie.com</span></div></div>'+
+        '<div class="note-box">Your search title &amp; description update from the boxes above. The <strong>share card image</strong> and social-preview text are set in your site\'s code — message Claude to change those.</div>';
+      $('page-seo').appendChild(sc);
+    }
   }
 
   function renderPhotos(){
     $('mainPreview').src=mainPhoto;
     const g=$('filmGrid'); g.innerHTML='';
-    filmPhotos.forEach((url,idx)=>{
-      const d=document.createElement('div'); d.className='film-thumb';
-      d.innerHTML='<img src="'+url+'" alt=""><button class="del" title="remove" data-idx="'+idx+'">×</button>';
-      g.appendChild(d);
-    });
+    filmPhotos.forEach((url,idx)=>{const d=document.createElement('div');d.className='film-thumb';d.innerHTML='<img src="'+url+'" alt=""><button class="del" data-idx="'+idx+'">×</button>';g.appendChild(d);});
   }
 
   async function loadValues(){
     const {data}=await db.from('site_content').select('key,value');
     const saved={}; (data||[]).forEach(r=>saved[r.key]=r.value);
-    SECTIONS.forEach(sec=>sec.fields.forEach(f=>{ $(f.key).value=(saved[f.key]!=null)?saved[f.key]:(DEFAULTS[f.key]||''); }));
-    mainPhoto = saved.main_photo || DEF_MAIN;
-    filmPhotos = saved.film_photos ? (()=>{try{return JSON.parse(saved.film_photos)}catch(e){return DEF_FILM.slice()}})() : DEF_FILM.slice();
+    ALL.forEach(f=>{ const el=$(f.key); if(el) el.value=(saved[f.key]!=null)?saved[f.key]:(DEFAULTS[f.key]||''); });
+    mainPhoto=saved.main_photo||DEF_MAIN;
+    filmPhotos=saved.film_photos?(()=>{try{return JSON.parse(saved.film_photos)}catch(e){return DEF_FILM.slice()}})():DEF_FILM.slice();
     renderPhotos();
   }
 
-  function pstat(msg,ok){const s=$('photoStatus');s.textContent=msg;s.className='status '+(ok===true?'ok':(ok===false?'err':''));}
-
+  function pstat(m,ok){const s=$('photoStatus');s.textContent=m;s.className='status '+(ok===true?'ok':(ok===false?'err':''));}
   async function processImage(file,maxW){
     let blob=file;
-    if(/heic|heif/i.test(file.type)||/\.(heic|heif)$/i.test(file.name)){
-      blob=await heic2any({blob:file,toType:'image/jpeg',quality:0.9});
-    }
+    if(/heic|heif/i.test(file.type)||/\.(heic|heif)$/i.test(file.name)) blob=await heic2any({blob:file,toType:'image/jpeg',quality:0.9});
     const url=URL.createObjectURL(blob);
     const img=await new Promise((res,rej)=>{const i=new Image();i.onload=()=>res(i);i.onerror=()=>rej(new Error('Could not read image'));i.src=url;});
-    const scale=Math.min(1,maxW/img.naturalWidth);
-    const w=Math.round(img.naturalWidth*scale), h=Math.round(img.naturalHeight*scale);
-    const c=document.createElement('canvas'); c.width=w; c.height=h;
-    c.getContext('2d').drawImage(img,0,0,w,h); URL.revokeObjectURL(url);
+    const sc=Math.min(1,maxW/img.naturalWidth), w=Math.round(img.naturalWidth*sc), h=Math.round(img.naturalHeight*sc);
+    const c=document.createElement('canvas'); c.width=w; c.height=h; c.getContext('2d').drawImage(img,0,0,w,h); URL.revokeObjectURL(url);
     return await new Promise(r=>c.toBlob(r,'image/jpeg',0.85));
   }
-  async function uploadPhoto(blob){
-    const name=Date.now()+'-'+Math.random().toString(36).slice(2,8)+'.jpg';
-    const {error}=await STORE.upload(name,blob,{contentType:'image/jpeg',upsert:false});
-    if(error) throw error;
-    return STORE.getPublicUrl(name).data.publicUrl;
+  async function uploadPhoto(blob){const name=Date.now()+'-'+Math.random().toString(36).slice(2,8)+'.jpg';const {error}=await STORE.upload(name,blob,{contentType:'image/jpeg'});if(error)throw error;return STORE.getPublicUrl(name).data.publicUrl;}
+  async function saveKey(key,value){return db.from('site_content').upsert([{key,value}],{onConflict:'key'});}
+
+  function bindPhotos(){
+    $('mainFile').addEventListener('change',async e=>{const file=e.target.files[0];e.target.value='';if(!file)return;pstat('Uploading…');try{const b=await processImage(file,1000);const url=await uploadPhoto(b);mainPhoto=url;const {error}=await saveKey('main_photo',url);if(error)throw error;renderPhotos();pstat('Main photo updated ✓',true);}catch(err){pstat('Upload failed: '+(err.message||err),false);}});
+    $('filmFile').addEventListener('change',async e=>{const file=e.target.files[0];e.target.value='';if(!file)return;pstat('Uploading…');try{const b=await processImage(file,800);const url=await uploadPhoto(b);filmPhotos.push(url);const {error}=await saveKey('film_photos',JSON.stringify(filmPhotos));if(error)throw error;renderPhotos();pstat('Film photo added ✓',true);}catch(err){pstat('Upload failed: '+(err.message||err),false);}});
+    $('filmGrid').addEventListener('click',async e=>{if(!e.target.classList.contains('del'))return;const idx=+e.target.dataset.idx;filmPhotos.splice(idx,1);const {error}=await saveKey('film_photos',JSON.stringify(filmPhotos));renderPhotos();pstat(error?('Could not remove: '+error.message):'Film photo removed ✓',error?false:true);});
   }
-  async function saveKey(key,value){ return db.from('site_content').upsert([{key,value}],{onConflict:'key'}); }
 
-  $('mainFile').addEventListener('change', async e=>{
-    const file=e.target.files[0]; e.target.value=''; if(!file) return;
-    pstat('Uploading main photo…');
-    try{ const b=await processImage(file,1000); const url=await uploadPhoto(b); mainPhoto=url; const {error}=await saveKey('main_photo',url); if(error) throw error; renderPhotos(); pstat('Main photo updated ✓',true); }
-    catch(err){ pstat('Upload failed: '+(err.message||err),false); }
-  });
-  $('filmFile').addEventListener('change', async e=>{
-    const file=e.target.files[0]; e.target.value=''; if(!file) return;
-    pstat('Uploading film photo…');
-    try{ const b=await processImage(file,800); const url=await uploadPhoto(b); filmPhotos.push(url); const {error}=await saveKey('film_photos',JSON.stringify(filmPhotos)); if(error) throw error; renderPhotos(); pstat('Film photo added ✓',true); }
-    catch(err){ pstat('Upload failed: '+(err.message||err),false); }
-  });
-  $('filmGrid').addEventListener('click', async e=>{
-    if(!e.target.classList.contains('del')) return;
-    const idx=+e.target.dataset.idx; filmPhotos.splice(idx,1);
-    const {error}=await saveKey('film_photos',JSON.stringify(filmPhotos)); renderPhotos();
-    pstat(error?('Could not remove: '+error.message):'Film photo removed ✓', error?false:true);
-  });
+  // nav
+  document.querySelectorAll('.nav button').forEach(b=>b.addEventListener('click',()=>{
+    document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+    b.classList.add('active'); $('page-'+b.dataset.page).classList.add('active');
+  }));
 
-  async function showEditor(){ loginView.style.display='none'; editorView.style.display='block'; buildForm(); await loadValues(); }
-  function showLogin(){ editorView.style.display='none'; loginView.style.display='block'; }
-
-  $('loginBtn').addEventListener('click', async ()=>{
-    $('loginStatus').textContent='';
-    const {error}=await db.auth.signInWithPassword({email:$('email').value.trim(),password:$('password').value});
-    if(error){ $('loginStatus').textContent=error.message; return; }
-    showEditor();
-  });
-  $('logoutBtn').addEventListener('click', async ()=>{ await db.auth.signOut(); showLogin(); });
-
-  $('saveBtn').addEventListener('click', async e=>{
-    const btn=e.target; btn.disabled=true; btn.textContent='Saving…'; const st=$('saveStatus'); st.className='status';
-    const rows=[]; SECTIONS.forEach(sec=>sec.fields.forEach(f=>rows.push({key:f.key,value:$(f.key).value})));
+  $('saveBtn').addEventListener('click',async e=>{
+    const btn=e.target;btn.disabled=true;btn.textContent='Saving…';const msg=$('saveMsg');msg.className='savemsg';msg.textContent='';
+    const rows=ALL.map(f=>({key:f.key,value:($(f.key)?$(f.key).value:'')}));
     const {error}=await db.from('site_content').upsert(rows,{onConflict:'key'});
-    btn.disabled=false; btn.textContent='Save text & links';
-    if(error){ st.textContent='Something went wrong: '+error.message; st.className='status err'; }
-    else { st.textContent='Saved! Your site is updated. ✓'; st.className='status ok'; }
+    btn.disabled=false;btn.textContent='Save changes';
+    if(error){msg.textContent='Error: '+error.message;msg.className='savemsg err';}else{msg.textContent='Saved ✓';msg.className='savemsg ok';setTimeout(()=>{msg.textContent='';},3000);}
   });
 
-  (async function(){ const {data:{session}}=await db.auth.getSession(); if(session) showEditor(); else showLogin(); })();
+  async function showApp(){
+    $('login').style.display='none'; $('app').style.display='block';
+    buildPage('content'); buildPage('links'); buildPage('seo'); bindPhotos();
+    await loadValues();
+  }
+  function showLogin(){ $('app').style.display='none'; $('login').style.display='flex'; }
+
+  $('loginBtn').addEventListener('click',async ()=>{$('loginStatus').textContent='';const {error}=await db.auth.signInWithPassword({email:$('email').value.trim(),password:$('password').value});if(error){$('loginStatus').textContent=error.message;return;}showApp();});
+  $('logoutBtn').addEventListener('click',async ()=>{await db.auth.signOut();showLogin();});
+
+  (async function(){const {data:{session}}=await db.auth.getSession();if(session)showApp();else showLogin();})();
 </script>
 </body>
 </html>

@@ -501,6 +501,8 @@
       });
       document.querySelectorAll('[data-link]').forEach(el=>{ const v=m['link_'+el.dataset.link]; if(v) el.setAttribute('href',v); });
       if(m.main_photo){ const im=document.querySelector('[data-mainphoto]'); if(im) im.setAttribute('src',m.main_photo); }
+      if(m.seo_title){ document.title=m.seo_title; }
+      if(m.seo_description){ const md=document.querySelector('meta[name="description"]'); if(md) md.setAttribute('content',m.seo_description); }
       if(m.film_photos){ try{ const a=JSON.parse(m.film_photos); if(Array.isArray(a)&&a.length) film=a; }catch(e){} }
     }catch(e){}
     if(film) buildBooth(film);
