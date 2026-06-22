@@ -70,6 +70,46 @@
   .note-box{background:#FFF6E9;border:1px solid #F4D9A8;border-radius:12px;padding:12px 14px;font-size:.82rem;color:#7a5a2e;margin-top:12px}
   a.outlink{color:var(--red);font-weight:700;text-decoration:underline}
 
+  /* planner */
+  .cal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+  .cal-head .m{font-weight:800;font-size:1.05rem}
+  .cal-head button{background:var(--cream);width:34px;height:34px;border-radius:9px;font-size:1.2rem;font-weight:700;color:var(--ink)}
+  .cal-head button:hover{background:var(--pink)}
+  .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
+  .cal-grid .dow{font-size:.6rem;font-weight:700;color:var(--muted);text-align:center;text-transform:uppercase;padding-bottom:4px}
+  .cal-cell{min-height:62px;border-radius:9px;border:1px solid var(--line);padding:5px;cursor:pointer;display:flex;flex-direction:column;gap:2px;overflow:hidden;background:#fff}
+  .cal-cell:hover{border-color:var(--red)}
+  .cal-cell.blank{border:none;background:none;cursor:default}
+  .cal-cell.today .num{color:var(--red)}
+  .cal-cell.sel{background:var(--pink);border-color:var(--red)}
+  .cal-cell .num{font-weight:700;font-size:.8rem}
+  .cal-cell .evt{font-size:.58rem;background:var(--red);color:#fff;border-radius:4px;padding:1px 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.4}
+  .day-panel{margin-top:14px;border-top:1px solid var(--line);padding-top:12px}
+  .day-panel h3{font-size:.88rem;font-weight:800;margin-bottom:8px}
+  .plan-row,.note-row{display:flex;align-items:center;gap:8px;background:var(--cream);border-radius:9px;padding:8px 11px;margin-bottom:6px;font-size:.86rem}
+  .plan-row button,.note-row button{margin-left:auto;background:none;color:var(--red);font-weight:800;font-size:1.1rem;line-height:1;flex:none}
+  @media(max-width:560px){.cal-cell{min-height:46px}.cal-cell .evt{display:none}}
+  /* planner */
+  .cal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+  .cal-head .m{font-weight:800;font-size:1.05rem}
+  .cal-head button{background:var(--cream);width:34px;height:34px;border-radius:9px;font-size:1.2rem;font-weight:700;color:var(--ink)}
+  .cal-head button:hover{background:var(--pink)}
+  .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
+  .cal-grid .dow{font-size:.6rem;font-weight:700;color:var(--muted);text-align:center;text-transform:uppercase;padding-bottom:4px}
+  .cal-cell{min-height:62px;border-radius:9px;border:1px solid var(--line);padding:5px;font-size:.78rem;cursor:pointer;position:relative;display:flex;flex-direction:column;gap:2px;overflow:hidden;background:#fff}
+  .cal-cell:hover{border-color:var(--red)}
+  .cal-cell.blank{border:none;background:none;cursor:default}
+  .cal-cell.today .num{color:var(--red)}
+  .cal-cell.sel{background:var(--pink);border-color:var(--red)}
+  .cal-cell .num{font-weight:700;font-size:.8rem}
+  .cal-cell .evt{font-size:.58rem;background:var(--red);color:#fff;border-radius:4px;padding:1px 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.4}
+  .day-panel{margin-top:14px;border-top:1px solid var(--line);padding-top:12px}
+  .day-panel h3{font-size:.85rem;font-weight:800;margin-bottom:8px}
+  .plan-row{display:flex;align-items:center;gap:8px;background:var(--cream);border-radius:9px;padding:8px 10px;margin-bottom:6px;font-size:.85rem}
+  .plan-row button,.note-row button{margin-left:auto;background:none;color:var(--red);font-weight:800;font-size:1.05rem;line-height:1}
+  .note-row{display:flex;align-items:flex-start;gap:8px;background:var(--cream);border-radius:9px;padding:9px 11px;margin-bottom:7px;font-size:.88rem}
+  @media(max-width:560px){.cal-cell{min-height:46px}.cal-cell .evt{display:none}}
+
   @media(max-width:760px){
     .shell{flex-direction:column}
     .side{width:auto;height:auto;position:static;flex-direction:row;align-items:center;gap:6px;overflow-x:auto;border-right:none;border-bottom:1.5px solid var(--line);padding:12px}
@@ -108,6 +148,7 @@
         <button data-page="links"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 15l6-6M10 7l1-1a4 4 0 0 1 6 6l-1 1M14 17l-1 1a4 4 0 0 1-6-6l1-1"/></svg> Links</button>
         <button data-page="seo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg> SEO</button>
         <button data-page="analytics"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg> Analytics</button>
+        <button data-page="planner"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="3"/><path d="M3 9h18M8 2v4M16 2v4"/></svg> Planner</button>
       </nav>
       <button class="logout" id="logoutBtn">↩ log out</button>
     </aside>
@@ -158,6 +199,30 @@
           <p id="gaStatus" style="margin:6px 0 12px;font-weight:700"></p>
           <a class="outlink" href="https://analytics.google.com" target="_blank">↗ Open Google Analytics</a>
           <div class="note-box">Once Google Analytics is connected, all your visitor stats live in the Google Analytics site (link above). Give it a day after launch to start showing data.</div>
+        </div>
+      </section>
+
+      <!-- PLANNER -->
+      <section class="page" id="page-planner">
+        <div class="card" style="margin-bottom:18px">
+          <h2>Content calendar</h2>
+          <div class="desc">click a day to plan a post</div>
+          <div class="cal-head">
+            <button id="calPrev">‹</button>
+            <span class="m" id="calMonth"></span>
+            <button id="calNext">›</button>
+          </div>
+          <div class="cal-grid" id="calGrid"></div>
+          <div id="dayPanel"></div>
+        </div>
+        <div class="card">
+          <h2>Idea notes</h2>
+          <div class="desc">jot down content ideas for later</div>
+          <div style="display:flex;gap:8px;margin-bottom:12px">
+            <input type="text" id="noteInput" placeholder="a new idea…" style="flex:1">
+            <button class="upload-btn" id="noteAdd" style="margin:0">Add</button>
+          </div>
+          <div id="notesList"></div>
         </div>
       </section>
     </main>
@@ -299,11 +364,66 @@
     $('login').style.display='none'; $('app').style.display='block';
     buildPage('content'); buildPage('links'); buildPage('seo'); bindPhotos();
     await loadValues();
+    loadPlanner();
   }
   function showLogin(){ $('app').style.display='none'; $('login').style.display='flex'; }
 
   $('loginBtn').addEventListener('click',async ()=>{$('loginStatus').textContent='';const {error}=await db.auth.signInWithPassword({email:$('email').value.trim(),password:$('password').value});if(error){$('loginStatus').textContent=error.message;return;}showApp();});
   $('logoutBtn').addEventListener('click',async ()=>{await db.auth.signOut();showLogin();});
+
+  // ---- Planner (calendar + notes) ----
+  function escTxt(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+  let calMonth=new Date(); calMonth.setDate(1);
+  let selDate=null, planEvents=[], planNotes=[];
+  const ymd=(y,mo,d)=>y+'-'+String(mo+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+
+  async function loadPlanner(){
+    try{
+      const [ev,nt]=await Promise.all([
+        db.from('planner_events').select('*').order('event_date'),
+        db.from('planner_notes').select('*').order('created_at',{ascending:false})
+      ]);
+      planEvents=ev.data||[]; planNotes=nt.data||[];
+    }catch(e){ planEvents=[]; planNotes=[]; }
+    renderCalendar(); renderNotes(); renderDayPanel();
+  }
+  function renderCalendar(){
+    if(!$('calGrid')) return;
+    const y=calMonth.getFullYear(), mo=calMonth.getMonth();
+    const startDow=new Date(y,mo,1).getDay(), days=new Date(y,mo+1,0).getDate();
+    const t=new Date(), today=ymd(t.getFullYear(),t.getMonth(),t.getDate());
+    let h=''; ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].forEach(d=>h+='<div class="dow">'+d+'</div>');
+    for(let i=0;i<startDow;i++) h+='<div class="cal-cell blank"></div>';
+    for(let d=1;d<=days;d++){
+      const ds=ymd(y,mo,d), de=planEvents.filter(e=>e.event_date===ds);
+      let cls='cal-cell'; if(ds===today)cls+=' today'; if(ds===selDate)cls+=' sel';
+      h+='<div class="'+cls+'" data-date="'+ds+'"><span class="num">'+d+'</span>'+de.slice(0,2).map(e=>'<span class="evt">'+escTxt(e.title)+'</span>').join('')+(de.length>2?'<span class="evt">+'+(de.length-2)+' more</span>':'')+'</div>';
+    }
+    $('calGrid').innerHTML=h;
+    $('calMonth').textContent=calMonth.toLocaleDateString('en-US',{month:'long',year:'numeric'});
+  }
+  function renderDayPanel(){
+    const p=$('dayPanel'); if(!p) return;
+    if(!selDate){ p.className=''; p.innerHTML=''; return; }
+    const de=planEvents.filter(e=>e.event_date===selDate);
+    const label=new Date(selDate+'T00:00').toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+    p.className='day-panel';
+    p.innerHTML='<h3>'+label+'</h3>'+de.map(e=>'<div class="plan-row">'+escTxt(e.title)+'<button data-del="'+e.id+'">×</button></div>').join('')+'<div style="display:flex;gap:8px;margin-top:6px"><input type="text" id="planInput" placeholder="plan a post…" style="flex:1"><button class="upload-btn" id="planAdd" style="margin:0">Add</button></div>';
+  }
+  function renderNotes(){
+    const l=$('notesList'); if(!l) return;
+    l.innerHTML=planNotes.length?planNotes.map(n=>'<div class="note-row">'+escTxt(n.body)+'<button data-notedel="'+n.id+'">×</button></div>').join(''):'<p class="hint">No ideas yet — add one above.</p>';
+  }
+  document.addEventListener('click', async e=>{
+    const t=e.target;
+    if(t.id==='calPrev'){ calMonth.setMonth(calMonth.getMonth()-1); renderCalendar(); }
+    else if(t.id==='calNext'){ calMonth.setMonth(calMonth.getMonth()+1); renderCalendar(); }
+    else if(t.id==='planAdd'){ const v=($('planInput').value||'').trim(); if(!v||!selDate)return; const {data,error}=await db.from('planner_events').insert({event_date:selDate,title:v}).select(); if(!error&&data){ planEvents.push(data[0]); renderCalendar(); renderDayPanel(); } }
+    else if(t.id==='noteAdd'){ const v=($('noteInput').value||'').trim(); if(!v)return; const {data,error}=await db.from('planner_notes').insert({body:v}).select(); if(!error&&data){ planNotes.unshift(data[0]); $('noteInput').value=''; renderNotes(); } }
+    else if(t.dataset.del){ const id=t.dataset.del; await db.from('planner_events').delete().eq('id',id); planEvents=planEvents.filter(x=>String(x.id)!==String(id)); renderCalendar(); renderDayPanel(); }
+    else if(t.dataset.notedel){ const id=t.dataset.notedel; await db.from('planner_notes').delete().eq('id',id); planNotes=planNotes.filter(x=>String(x.id)!==String(id)); renderNotes(); }
+    else if(t.closest('.cal-cell') && !t.closest('.cal-cell').classList.contains('blank')){ selDate=t.closest('.cal-cell').dataset.date; renderCalendar(); renderDayPanel(); }
+  });
 
   (async function(){const {data:{session}}=await db.auth.getSession();if(session)showApp();else showLogin();})();
 </script>
