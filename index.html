@@ -491,9 +491,7 @@
       const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
       document.querySelectorAll('[data-key]').forEach(el=>{
         const v=m[el.dataset.key]; if(v==null) return;
-        if(el.dataset.rich!==undefined){
-          el.innerHTML=esc(v).replace(/\*([^*]+)\*/g,'<span class="'+(el.dataset.rich||'mark')+'">$1</span>');
-        }else{ el.textContent=v; }
+        el.innerHTML=esc(v).replace(/\*([^*]+)\*/g,'<span class="'+(el.dataset.rich||'mark')+'">$1</span>');
       });
       document.querySelectorAll('[data-link]').forEach(el=>{
         const v=m['link_'+el.dataset.link]; if(v) el.setAttribute('href',v);
