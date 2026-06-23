@@ -107,7 +107,12 @@
   .day-panel h3{font-size:.85rem;font-weight:800;margin-bottom:8px}
   .plan-row{display:flex;align-items:center;gap:8px;background:var(--cream);border-radius:9px;padding:8px 10px;margin-bottom:6px;font-size:.85rem}
   .plan-row button,.note-row button{margin-left:auto;background:none;color:var(--red);font-weight:800;font-size:1.05rem;line-height:1}
-  .note-row{display:flex;align-items:flex-start;gap:8px;background:var(--cream);border-radius:9px;padding:9px 11px;margin-bottom:7px;font-size:.88rem}
+  .note-row{display:flex;align-items:center;gap:8px;background:var(--cream);border-radius:9px;padding:9px 11px;margin-bottom:7px;font-size:.88rem}
+  .note-row .note-body{flex:1}
+  .note-sched{background:var(--pink);border-radius:999px;padding:3px 9px;font-size:.95rem;line-height:1;flex:0 0 auto}
+  .note-x{background:none;color:var(--red);font-weight:800;font-size:1.05rem;line-height:1;flex:0 0 auto}
+  .sched-banner{background:var(--pink);border:1.5px solid var(--pink2);border-radius:10px;padding:9px 12px;margin-bottom:12px;font-size:.84rem;line-height:1.45}
+  .sched-banner #schedCancel{background:#fff;color:var(--red);border:1px solid var(--pink2);border-radius:999px;padding:2px 10px;font-size:.75rem;font-weight:700;margin-left:4px}
   .ai-card{border:1.5px solid var(--pink2);border-radius:12px;padding:13px 14px;margin-bottom:10px;background:#fff}
   .ai-trend{font-family:'Space Mono',monospace;font-size:.62rem;letter-spacing:1px;text-transform:uppercase;color:var(--red);margin-bottom:4px}
   .ai-title{font-weight:800;font-size:.95rem;margin-bottom:4px}
@@ -213,6 +218,7 @@
         <div class="card" style="margin-bottom:18px">
           <h2>Content calendar</h2>
           <div class="desc">click a day to plan a post</div>
+          <div id="schedBanner"></div>
           <div class="cal-head">
             <button id="calPrev">‹</button>
             <span class="m" id="calMonth"></span>
@@ -428,7 +434,12 @@
   }
   function renderNotes(){
     const l=$('notesList'); if(!l) return;
-    l.innerHTML=planNotes.length?planNotes.map(n=>'<div class="note-row">'+escTxt(n.body)+'<button data-notedel="'+n.id+'">×</button></div>').join(''):'<p class="hint">No ideas yet — add one above.</p>';
+    l.innerHTML=planNotes.length?planNotes.map(n=>'<div class="note-row"><span class="note-body">'+escTxt(n.body)+'</span><button class="note-sched" data-sched="'+n.id+'" title="Schedule on calendar">📅</button><button class="note-x" data-notedel="'+n.id+'">×</button></div>').join(''):'<p class="hint">No ideas yet — add one above.</p>';
+  }
+  let pendingNote=null;
+  function renderSchedBanner(){
+    const b=$('schedBanner'); if(!b) return;
+    b.innerHTML=pendingNote?('<div class="sched-banner">📅 Tap a day above to schedule: <strong>'+escTxt(pendingNote.body)+'</strong> <button id="schedCancel">cancel</button></div>'):'';
   }
 
   // ---- AI content ideas ----
@@ -463,8 +474,16 @@
     else if(t.id==='aiGo'){ getAIideas(); }
     else if(t.dataset.aisave!=null){ const it=aiIdeas[+t.dataset.aisave]; if(!it)return; const body=(it.title?it.title+': ':'')+(it.idea||''); const {data,error}=await db.from('planner_notes').insert({body}).select(); if(!error&&data){ planNotes.unshift(data[0]); renderNotes(); t.textContent='Saved ✓'; t.disabled=true; } }
     else if(t.dataset.del){ const id=t.dataset.del; await db.from('planner_events').delete().eq('id',id); planEvents=planEvents.filter(x=>String(x.id)!==String(id)); renderCalendar(); renderDayPanel(); }
-    else if(t.dataset.notedel){ const id=t.dataset.notedel; await db.from('planner_notes').delete().eq('id',id); planNotes=planNotes.filter(x=>String(x.id)!==String(id)); renderNotes(); }
-    else if(t.closest('.cal-cell') && !t.closest('.cal-cell').classList.contains('blank')){ selDate=t.closest('.cal-cell').dataset.date; renderCalendar(); renderDayPanel(); }
+    else if(t.dataset.notedel){ const id=t.dataset.notedel; await db.from('planner_notes').delete().eq('id',id); planNotes=planNotes.filter(x=>String(x.id)!==String(id)); if(pendingNote&&String(pendingNote.id)===String(id)){ pendingNote=null; renderSchedBanner(); } renderNotes(); }
+    else if(t.dataset.sched){ const n=planNotes.find(x=>String(x.id)===String(t.dataset.sched)); if(n){ pendingNote=n; renderSchedBanner(); $('schedBanner').scrollIntoView({behavior:'smooth',block:'nearest'}); } }
+    else if(t.id==='schedCancel'){ pendingNote=null; renderSchedBanner(); }
+    else if(t.closest('.cal-cell') && !t.closest('.cal-cell').classList.contains('blank')){
+      const ds=t.closest('.cal-cell').dataset.date;
+      if(pendingNote){
+        const {data,error}=await db.from('planner_events').insert({event_date:ds,title:pendingNote.body}).select();
+        if(!error&&data){ planEvents.push(data[0]); const nid=pendingNote.id; await db.from('planner_notes').delete().eq('id',nid); planNotes=planNotes.filter(x=>String(x.id)!==String(nid)); pendingNote=null; selDate=ds; renderSchedBanner(); renderCalendar(); renderDayPanel(); renderNotes(); }
+      } else { selDate=ds; renderCalendar(); renderDayPanel(); }
+    }
   });
 
   (async function(){const {data:{session}}=await db.auth.getSession();if(session)showApp();else showLogin();})();
