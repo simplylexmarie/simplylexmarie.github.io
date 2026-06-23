@@ -108,6 +108,16 @@
   .plan-row{display:flex;align-items:center;gap:8px;background:var(--cream);border-radius:9px;padding:8px 10px;margin-bottom:6px;font-size:.85rem}
   .plan-row .plan-title{flex:1}
   .plan-row .plan-date{width:auto;font-size:.74rem;padding:4px 7px;border:1px solid var(--pink2);border-radius:8px;background:#fff;color:var(--ink);font-family:inherit}
+  .modal-overlay{position:fixed;inset:0;z-index:200;background:rgba(36,22,25,.45);display:flex;align-items:center;justify-content:center;padding:20px}
+  .modal-card{background:var(--paper);border-radius:18px;width:100%;max-width:440px;max-height:84vh;overflow:auto;padding:22px;box-shadow:0 30px 60px -20px rgba(36,22,25,.5)}
+  .modal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+  .modal-head h3{font-size:1.15rem;font-weight:800}
+  .modal-close{background:var(--cream);width:30px;height:30px;border-radius:50%;color:var(--ink);font-size:1.2rem;line-height:1;flex:0 0 auto}
+  .dm-row{display:flex;align-items:center;gap:7px;background:var(--cream);border-radius:10px;padding:8px;margin-bottom:8px}
+  .dm-row .dm-text{flex:1;width:auto;font-size:.85rem;padding:7px 9px;border:1px solid var(--line);border-radius:8px;background:#fff}
+  .dm-row .dm-date{width:auto;font-size:.72rem;padding:6px 7px;border:1px solid var(--pink2);border-radius:8px;background:#fff;color:var(--ink);font-family:inherit;flex:0 0 auto}
+  .dm-add{display:flex;gap:8px;margin-top:12px}
+  .dm-add input{flex:1}
   .plan-row button,.note-row button{margin-left:auto;background:none;color:var(--red);font-weight:800;font-size:1.05rem;line-height:1}
   .note-row{display:flex;align-items:center;gap:8px;background:var(--cream);border-radius:9px;padding:9px 11px;margin-bottom:7px;font-size:.88rem}
   .note-row .note-body{flex:1}
@@ -227,7 +237,6 @@
             <button id="calNext">›</button>
           </div>
           <div class="cal-grid" id="calGrid"></div>
-          <div id="dayPanel"></div>
         </div>
         <div class="card" style="margin-bottom:18px">
           <h2>AI content ideas ✨</h2>
@@ -250,6 +259,21 @@
         </div>
       </section>
     </main>
+  </div>
+</div>
+
+<!-- day to-do pop-up -->
+<div id="dayModal" class="modal-overlay" style="display:none">
+  <div class="modal-card">
+    <div class="modal-head">
+      <h3 id="dmTitle"></h3>
+      <button id="dmClose" class="modal-close" title="Close">×</button>
+    </div>
+    <div id="dmList"></div>
+    <div class="dm-add">
+      <input type="text" id="planInput" placeholder="add a to-do for this day…">
+      <button class="upload-btn" id="planAdd" style="margin:0">Add</button>
+    </div>
   </div>
 </div>
 
@@ -417,7 +441,7 @@
       ]);
       planEvents=ev.data||[]; planNotes=nt.data||[];
     }catch(e){ planEvents=[]; planNotes=[]; }
-    renderCalendar(); renderNotes(); renderDayPanel();
+    renderCalendar(); renderNotes();
   }
   function renderCalendar(){
     if(!$('calGrid')) return;
@@ -434,14 +458,16 @@
     $('calGrid').innerHTML=h;
     $('calMonth').textContent=calMonth.toLocaleDateString('en-US',{month:'long',year:'numeric'});
   }
-  function renderDayPanel(){
-    const p=$('dayPanel'); if(!p) return;
-    if(!selDate){ p.className=''; p.innerHTML=''; return; }
+  function escAttr(s){return escTxt(s).replace(/"/g,'&quot;');}
+  function renderDayModal(){
+    if(!selDate) return;
     const de=planEvents.filter(e=>e.event_date===selDate);
     const label=new Date(selDate+'T00:00').toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
-    p.className='day-panel';
-    p.innerHTML='<h3>'+label+'</h3>'+de.map(e=>'<div class="plan-row"><span class="plan-title">'+escTxt(e.title)+'</span><input type="date" class="plan-date" data-movedate="'+e.id+'" value="'+e.event_date+'" title="Move to another day"><button class="note-x" data-del="'+e.id+'" title="Delete">×</button></div>').join('')+'<div style="display:flex;gap:8px;margin-top:6px"><input type="text" id="planInput" placeholder="plan a post…" style="flex:1"><button class="upload-btn" id="planAdd" style="margin:0">Add</button></div>';
+    $('dmTitle').textContent=label;
+    $('dmList').innerHTML=de.length?de.map(e=>'<div class="dm-row"><input type="text" class="dm-text" data-edittext="'+e.id+'" value="'+escAttr(e.title)+'"><input type="date" class="dm-date" data-movedate="'+e.id+'" value="'+e.event_date+'" title="Move to another day"><button class="note-x" data-del="'+e.id+'" title="Delete">×</button></div>').join(''):'<p class="hint">Nothing planned yet. Add a to-do below.</p>';
   }
+  function openDayModal(date){ selDate=date; renderDayModal(); $('dayModal').style.display='flex'; const pi=$('planInput'); if(pi) pi.value=''; }
+  function closeDayModal(){ $('dayModal').style.display='none'; }
   function renderNotes(){
     const l=$('notesList'); if(!l) return;
     l.innerHTML=planNotes.length?planNotes.map(n=>'<div class="note-row"><span class="note-body">'+escTxt(n.body)+'</span><button class="note-sched" data-sched="'+n.id+'" title="Schedule on calendar">📅</button><button class="note-x" data-notedel="'+n.id+'">×</button></div>').join(''):'<p class="hint">No ideas yet — add one above.</p>';
@@ -479,11 +505,12 @@
     const t=e.target;
     if(t.id==='calPrev'){ calMonth.setMonth(calMonth.getMonth()-1); renderCalendar(); }
     else if(t.id==='calNext'){ calMonth.setMonth(calMonth.getMonth()+1); renderCalendar(); }
-    else if(t.id==='planAdd'){ const v=($('planInput').value||'').trim(); if(!v||!selDate)return; const {data,error}=await db.from('planner_events').insert({event_date:selDate,title:v}).select(); if(!error&&data){ planEvents.push(data[0]); renderCalendar(); renderDayPanel(); } }
+    else if(t.id==='planAdd'){ const v=($('planInput').value||'').trim(); if(!v||!selDate)return; const {data,error}=await db.from('planner_events').insert({event_date:selDate,title:v}).select(); if(!error&&data){ planEvents.push(data[0]); $('planInput').value=''; renderCalendar(); renderDayModal(); } }
     else if(t.id==='noteAdd'){ const v=($('noteInput').value||'').trim(); if(!v)return; const {data,error}=await db.from('planner_notes').insert({body:v}).select(); if(!error&&data){ planNotes.unshift(data[0]); $('noteInput').value=''; renderNotes(); } }
     else if(t.id==='aiGo'){ getAIideas(); }
     else if(t.dataset.aisave!=null){ const it=aiIdeas[+t.dataset.aisave]; if(!it)return; const body=(it.title?it.title+': ':'')+(it.idea||''); const {data,error}=await db.from('planner_notes').insert({body}).select(); if(!error&&data){ planNotes.unshift(data[0]); renderNotes(); t.textContent='Saved ✓'; t.disabled=true; } }
-    else if(t.dataset.del){ const id=t.dataset.del; await db.from('planner_events').delete().eq('id',id); planEvents=planEvents.filter(x=>String(x.id)!==String(id)); renderCalendar(); renderDayPanel(); }
+    else if(t.dataset.del){ const id=t.dataset.del; await db.from('planner_events').delete().eq('id',id); planEvents=planEvents.filter(x=>String(x.id)!==String(id)); renderCalendar(); renderDayModal(); }
+    else if(t.id==='dmClose'||t.id==='dayModal'){ closeDayModal(); }
     else if(t.dataset.notedel){ const id=t.dataset.notedel; await db.from('planner_notes').delete().eq('id',id); planNotes=planNotes.filter(x=>String(x.id)!==String(id)); if(pendingNote&&String(pendingNote.id)===String(id)){ pendingNote=null; renderSchedBanner(); } renderNotes(); }
     else if(t.dataset.sched){ const n=planNotes.find(x=>String(x.id)===String(t.dataset.sched)); if(n){ pendingNote=n; renderSchedBanner(); $('schedBanner').scrollIntoView({behavior:'smooth',block:'nearest'}); } }
     else if(t.id==='schedCancel'){ pendingNote=null; renderSchedBanner(); }
@@ -491,19 +518,23 @@
       const ds=t.closest('.cal-cell').dataset.date;
       if(pendingNote){
         const {data,error}=await db.from('planner_events').insert({event_date:ds,title:pendingNote.body}).select();
-        if(!error&&data){ planEvents.push(data[0]); const nid=pendingNote.id; await db.from('planner_notes').delete().eq('id',nid); planNotes=planNotes.filter(x=>String(x.id)!==String(nid)); pendingNote=null; selDate=ds; renderSchedBanner(); renderCalendar(); renderDayPanel(); renderNotes(); }
-      } else { selDate=ds; renderCalendar(); renderDayPanel(); }
+        if(!error&&data){ planEvents.push(data[0]); const nid=pendingNote.id; await db.from('planner_notes').delete().eq('id',nid); planNotes=planNotes.filter(x=>String(x.id)!==String(nid)); pendingNote=null; selDate=ds; renderSchedBanner(); renderCalendar(); renderNotes(); }
+      } else { openDayModal(ds); renderCalendar(); }
     }
   });
 
-  // move a planned post to a different day (Google-Calendar style)
+  // edit a planned post's date or text (Google-Calendar style)
   document.addEventListener('change', async e=>{
     const t=e.target;
     if(t.dataset && t.dataset.movedate){
-      const id=t.dataset.movedate, nd=t.value; if(!nd) return;
+      const id=t.dataset.movedate, nd=t.value; if(!nd){ renderDayModal(); return; }
       const {error}=await db.from('planner_events').update({event_date:nd}).eq('id',id);
-      if(!error){ const ev=planEvents.find(x=>String(x.id)===String(id)); if(ev) ev.event_date=nd; selDate=nd; renderCalendar(); renderDayPanel(); }
-      else { renderDayPanel(); }
+      if(!error){ const ev=planEvents.find(x=>String(x.id)===String(id)); if(ev) ev.event_date=nd; renderCalendar(); renderDayModal(); }
+      else { renderDayModal(); }
+    } else if(t.dataset && t.dataset.edittext){
+      const id=t.dataset.edittext, nv=(t.value||'').trim(); if(!nv){ renderDayModal(); return; }
+      const {error}=await db.from('planner_events').update({title:nv}).eq('id',id);
+      if(!error){ const ev=planEvents.find(x=>String(x.id)===String(id)); if(ev) ev.title=nv; renderCalendar(); }
     }
   });
 
