@@ -106,6 +106,8 @@
   .day-panel{margin-top:14px;border-top:1px solid var(--line);padding-top:12px}
   .day-panel h3{font-size:.85rem;font-weight:800;margin-bottom:8px}
   .plan-row{display:flex;align-items:center;gap:8px;background:var(--cream);border-radius:9px;padding:8px 10px;margin-bottom:6px;font-size:.85rem}
+  .plan-row .plan-title{flex:1}
+  .plan-row .plan-date{width:auto;font-size:.74rem;padding:4px 7px;border:1px solid var(--pink2);border-radius:8px;background:#fff;color:var(--ink);font-family:inherit}
   .plan-row button,.note-row button{margin-left:auto;background:none;color:var(--red);font-weight:800;font-size:1.05rem;line-height:1}
   .note-row{display:flex;align-items:center;gap:8px;background:var(--cream);border-radius:9px;padding:9px 11px;margin-bottom:7px;font-size:.88rem}
   .note-row .note-body{flex:1}
@@ -382,13 +384,20 @@
     if(error){msg.textContent='Error: '+error.message;msg.className='savemsg err';}else{msg.textContent='Saved ✓';msg.className='savemsg ok';setTimeout(()=>{msg.textContent='';},3000);}
   });
 
+  let sessionWatch=null;
   async function showApp(){
     $('login').style.display='none'; $('app').style.display='block';
     buildPage('content'); buildPage('links'); buildPage('seo'); bindPhotos();
     await loadValues();
     loadPlanner();
+    // auto-log-out once the 48h window passes, even if the tab is left open
+    if(sessionWatch) clearInterval(sessionWatch);
+    sessionWatch=setInterval(async ()=>{
+      const at=+(localStorage.getItem('admin_login_at')||0);
+      if(!at||Date.now()-at>SESSION_MAX_MS){ clearInterval(sessionWatch); sessionWatch=null; localStorage.removeItem('admin_login_at'); await db.auth.signOut(); showLogin(); }
+    },60*1000);
   }
-  function showLogin(){ $('app').style.display='none'; $('login').style.display='flex'; }
+  function showLogin(){ if(sessionWatch){clearInterval(sessionWatch);sessionWatch=null;} $('app').style.display='none'; $('login').style.display='flex'; }
 
   const SESSION_MAX_MS=48*60*60*1000; // re-login required every 48 hours
   $('loginBtn').addEventListener('click',async ()=>{$('loginStatus').textContent='';const {error}=await db.auth.signInWithPassword({email:$('email').value.trim(),password:$('password').value});if(error){$('loginStatus').textContent=error.message;return;}localStorage.setItem('admin_login_at',String(Date.now()));showApp();});
@@ -431,7 +440,7 @@
     const de=planEvents.filter(e=>e.event_date===selDate);
     const label=new Date(selDate+'T00:00').toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
     p.className='day-panel';
-    p.innerHTML='<h3>'+label+'</h3>'+de.map(e=>'<div class="plan-row">'+escTxt(e.title)+'<button data-del="'+e.id+'">×</button></div>').join('')+'<div style="display:flex;gap:8px;margin-top:6px"><input type="text" id="planInput" placeholder="plan a post…" style="flex:1"><button class="upload-btn" id="planAdd" style="margin:0">Add</button></div>';
+    p.innerHTML='<h3>'+label+'</h3>'+de.map(e=>'<div class="plan-row"><span class="plan-title">'+escTxt(e.title)+'</span><input type="date" class="plan-date" data-movedate="'+e.id+'" value="'+e.event_date+'" title="Move to another day"><button class="note-x" data-del="'+e.id+'" title="Delete">×</button></div>').join('')+'<div style="display:flex;gap:8px;margin-top:6px"><input type="text" id="planInput" placeholder="plan a post…" style="flex:1"><button class="upload-btn" id="planAdd" style="margin:0">Add</button></div>';
   }
   function renderNotes(){
     const l=$('notesList'); if(!l) return;
@@ -484,6 +493,17 @@
         const {data,error}=await db.from('planner_events').insert({event_date:ds,title:pendingNote.body}).select();
         if(!error&&data){ planEvents.push(data[0]); const nid=pendingNote.id; await db.from('planner_notes').delete().eq('id',nid); planNotes=planNotes.filter(x=>String(x.id)!==String(nid)); pendingNote=null; selDate=ds; renderSchedBanner(); renderCalendar(); renderDayPanel(); renderNotes(); }
       } else { selDate=ds; renderCalendar(); renderDayPanel(); }
+    }
+  });
+
+  // move a planned post to a different day (Google-Calendar style)
+  document.addEventListener('change', async e=>{
+    const t=e.target;
+    if(t.dataset && t.dataset.movedate){
+      const id=t.dataset.movedate, nd=t.value; if(!nd) return;
+      const {error}=await db.from('planner_events').update({event_date:nd}).eq('id',id);
+      if(!error){ const ev=planEvents.find(x=>String(x.id)===String(id)); if(ev) ev.event_date=nd; selDate=nd; renderCalendar(); renderDayPanel(); }
+      else { renderDayPanel(); }
     }
   });
 
