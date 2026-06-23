@@ -108,6 +108,12 @@
   .plan-row{display:flex;align-items:center;gap:8px;background:var(--cream);border-radius:9px;padding:8px 10px;margin-bottom:6px;font-size:.85rem}
   .plan-row button,.note-row button{margin-left:auto;background:none;color:var(--red);font-weight:800;font-size:1.05rem;line-height:1}
   .note-row{display:flex;align-items:flex-start;gap:8px;background:var(--cream);border-radius:9px;padding:9px 11px;margin-bottom:7px;font-size:.88rem}
+  .ai-card{border:1.5px solid var(--pink2);border-radius:12px;padding:13px 14px;margin-bottom:10px;background:#fff}
+  .ai-trend{font-family:'Space Mono',monospace;font-size:.62rem;letter-spacing:1px;text-transform:uppercase;color:var(--red);margin-bottom:4px}
+  .ai-title{font-weight:800;font-size:.95rem;margin-bottom:4px}
+  .ai-idea{font-size:.86rem;color:#5a4147;line-height:1.5;margin-bottom:9px}
+  .ai-save{background:var(--pink);color:var(--red-deep);font-weight:700;font-size:.78rem;border:none;border-radius:999px;padding:6px 14px;cursor:pointer}
+  .ai-save:disabled{background:#e9f5e9;color:#4a9d5b;cursor:default}
   @media(max-width:560px){.cal-cell{min-height:46px}.cal-cell .evt{display:none}}
 
   @media(max-width:760px){
@@ -214,6 +220,16 @@
           </div>
           <div class="cal-grid" id="calGrid"></div>
           <div id="dayPanel"></div>
+        </div>
+        <div class="card" style="margin-bottom:18px">
+          <h2>AI content ideas ✨</h2>
+          <div class="desc">get fresh video ideas based on your content and what's trending now</div>
+          <div style="display:flex;gap:8px;margin-bottom:12px">
+            <input type="text" id="aiTheme" placeholder="optional vibe, e.g. summer swimsuits, fall layering…" style="flex:1">
+            <button class="upload-btn" id="aiGo" style="margin:0">Get ideas</button>
+          </div>
+          <div id="aiStatus" class="hint" style="display:none"></div>
+          <div id="aiList"></div>
         </div>
         <div class="card">
           <h2>Idea notes</h2>
@@ -414,12 +430,38 @@
     const l=$('notesList'); if(!l) return;
     l.innerHTML=planNotes.length?planNotes.map(n=>'<div class="note-row">'+escTxt(n.body)+'<button data-notedel="'+n.id+'">×</button></div>').join(''):'<p class="hint">No ideas yet — add one above.</p>';
   }
+
+  // ---- AI content ideas ----
+  const AI_FN_URL='https://rqukbgvfgjvgvjprptcr.supabase.co/functions/v1/content-ideas';
+  const AI_KEY='sb_publishable_aVYauYUD9vJksZW6_vpA2w_8gvDN5zV';
+  let aiIdeas=[];
+  function renderAIideas(){
+    const l=$('aiList'); if(!l) return;
+    l.innerHTML=aiIdeas.map((it,i)=>'<div class="ai-card"><div class="ai-trend">'+escTxt(it.trend||'trending')+'</div><div class="ai-title">'+escTxt(it.title||'')+'</div><div class="ai-idea">'+escTxt(it.idea||'')+'</div><button class="ai-save" data-aisave="'+i+'">+ Save to notes</button></div>').join('');
+  }
+  async function getAIideas(){
+    const btn=$('aiGo'), status=$('aiStatus');
+    btn.disabled=true; btn.textContent='Thinking…';
+    status.style.display='block'; status.textContent='Searching for fresh ideas (this can take 20-40 seconds)…';
+    $('aiList').innerHTML='';
+    try{
+      const {data:{session}}=await db.auth.getSession();
+      const res=await fetch(AI_FN_URL,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+(session?session.access_token:''),'apikey':AI_KEY},body:JSON.stringify({theme:($('aiTheme').value||'').trim(),notes:planNotes.map(n=>n.body)})});
+      const out=await res.json();
+      if(!res.ok||!out.ideas){ status.textContent=out.error||'Something went wrong. Try again.'; return; }
+      aiIdeas=out.ideas; status.style.display='none'; renderAIideas();
+    }catch(err){ status.textContent='Could not reach the idea generator. Try again in a moment.'; }
+    finally{ btn.disabled=false; btn.textContent='Get ideas'; }
+  }
+
   document.addEventListener('click', async e=>{
     const t=e.target;
     if(t.id==='calPrev'){ calMonth.setMonth(calMonth.getMonth()-1); renderCalendar(); }
     else if(t.id==='calNext'){ calMonth.setMonth(calMonth.getMonth()+1); renderCalendar(); }
     else if(t.id==='planAdd'){ const v=($('planInput').value||'').trim(); if(!v||!selDate)return; const {data,error}=await db.from('planner_events').insert({event_date:selDate,title:v}).select(); if(!error&&data){ planEvents.push(data[0]); renderCalendar(); renderDayPanel(); } }
     else if(t.id==='noteAdd'){ const v=($('noteInput').value||'').trim(); if(!v)return; const {data,error}=await db.from('planner_notes').insert({body:v}).select(); if(!error&&data){ planNotes.unshift(data[0]); $('noteInput').value=''; renderNotes(); } }
+    else if(t.id==='aiGo'){ getAIideas(); }
+    else if(t.dataset.aisave!=null){ const it=aiIdeas[+t.dataset.aisave]; if(!it)return; const body=(it.title?it.title+': ':'')+(it.idea||''); const {data,error}=await db.from('planner_notes').insert({body}).select(); if(!error&&data){ planNotes.unshift(data[0]); renderNotes(); t.textContent='Saved ✓'; t.disabled=true; } }
     else if(t.dataset.del){ const id=t.dataset.del; await db.from('planner_events').delete().eq('id',id); planEvents=planEvents.filter(x=>String(x.id)!==String(id)); renderCalendar(); renderDayPanel(); }
     else if(t.dataset.notedel){ const id=t.dataset.notedel; await db.from('planner_notes').delete().eq('id',id); planNotes=planNotes.filter(x=>String(x.id)!==String(id)); renderNotes(); }
     else if(t.closest('.cal-cell') && !t.closest('.cal-cell').classList.contains('blank')){ selDate=t.closest('.cal-cell').dataset.date; renderCalendar(); renderDayPanel(); }
