@@ -223,9 +223,9 @@
         </div>
         <div class="card" style="margin-bottom:18px">
           <h2>AI content ideas ✨</h2>
-          <div class="desc">get fresh video ideas based on your content and what's trending now</div>
+          <div class="desc">just hit the button and it comes up with ideas on its own, based on your content and what's trending. the box is optional if you want to steer it.</div>
           <div style="display:flex;gap:8px;margin-bottom:12px">
-            <input type="text" id="aiTheme" placeholder="optional vibe, e.g. summer swimsuits, fall layering…" style="flex:1">
+            <input type="text" id="aiTheme" placeholder="optional: a vibe to steer it (or leave blank)…" style="flex:1">
             <button class="upload-btn" id="aiGo" style="margin:0">Get ideas</button>
           </div>
           <div id="aiStatus" class="hint" style="display:none"></div>
@@ -448,7 +448,7 @@
       const {data:{session}}=await db.auth.getSession();
       const res=await fetch(AI_FN_URL,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+(session?session.access_token:''),'apikey':AI_KEY},body:JSON.stringify({theme:($('aiTheme').value||'').trim(),notes:planNotes.map(n=>n.body)})});
       const out=await res.json();
-      if(!res.ok||!out.ideas){ status.textContent=out.error||'Something went wrong. Try again.'; return; }
+      if(!res.ok||!out.ideas){ status.textContent=(out.error||'Something went wrong.')+(out.detail?(' — '+(typeof out.detail==='string'?out.detail:JSON.stringify(out.detail))):''); return; }
       aiIdeas=out.ideas; status.style.display='none'; renderAIideas();
     }catch(err){ status.textContent='Could not reach the idea generator. Try again in a moment.'; }
     finally{ btn.disabled=false; btn.textContent='Get ideas'; }
