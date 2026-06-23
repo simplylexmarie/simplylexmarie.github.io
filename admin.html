@@ -390,8 +390,9 @@
   }
   function showLogin(){ $('app').style.display='none'; $('login').style.display='flex'; }
 
-  $('loginBtn').addEventListener('click',async ()=>{$('loginStatus').textContent='';const {error}=await db.auth.signInWithPassword({email:$('email').value.trim(),password:$('password').value});if(error){$('loginStatus').textContent=error.message;return;}showApp();});
-  $('logoutBtn').addEventListener('click',async ()=>{await db.auth.signOut();showLogin();});
+  const SESSION_MAX_MS=48*60*60*1000; // re-login required every 48 hours
+  $('loginBtn').addEventListener('click',async ()=>{$('loginStatus').textContent='';const {error}=await db.auth.signInWithPassword({email:$('email').value.trim(),password:$('password').value});if(error){$('loginStatus').textContent=error.message;return;}localStorage.setItem('admin_login_at',String(Date.now()));showApp();});
+  $('logoutBtn').addEventListener('click',async ()=>{localStorage.removeItem('admin_login_at');await db.auth.signOut();showLogin();});
 
   // ---- Planner (calendar + notes) ----
   function escTxt(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
@@ -486,7 +487,15 @@
     }
   });
 
-  (async function(){const {data:{session}}=await db.auth.getSession();if(session)showApp();else showLogin();})();
+  (async function(){
+    const {data:{session}}=await db.auth.getSession();
+    if(session){
+      let at=+(localStorage.getItem('admin_login_at')||0);
+      if(!at){ at=Date.now(); localStorage.setItem('admin_login_at',String(at)); } // start the clock for an existing session
+      if(Date.now()-at>SESSION_MAX_MS){ localStorage.removeItem('admin_login_at'); await db.auth.signOut(); showLogin(); }
+      else showApp();
+    } else showLogin();
+  })();
 </script>
 </body>
 </html>
