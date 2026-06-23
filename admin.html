@@ -118,6 +118,11 @@
   .dm-row .dm-date{width:auto;font-size:.72rem;padding:6px 7px;border:1px solid var(--pink2);border-radius:8px;background:#fff;color:var(--ink);font-family:inherit;flex:0 0 auto}
   .dm-add{display:flex;gap:8px;margin-top:12px}
   .dm-add input{flex:1}
+  .cal-cell:not(.blank){position:relative}
+  .cal-cell:not(.blank)::after{content:'+';position:absolute;top:2px;right:5px;font-size:.85rem;font-weight:800;color:var(--red);opacity:0;transition:opacity .12s}
+  .cal-cell:not(.blank):hover::after{opacity:.55}
+  .cal-cell:not(.blank):hover{border-color:var(--red);background:#fff}
+  @media(hover:none){.cal-cell:not(.blank)::after{opacity:.3}}
   .plan-row button,.note-row button{margin-left:auto;background:none;color:var(--red);font-weight:800;font-size:1.05rem;line-height:1}
   .note-row{display:flex;align-items:center;gap:8px;background:var(--cream);border-radius:9px;padding:9px 11px;margin-bottom:7px;font-size:.88rem}
   .note-row .note-body{flex:1}
