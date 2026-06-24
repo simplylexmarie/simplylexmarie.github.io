@@ -495,7 +495,9 @@
           +'<div class="te-controls"><input type="date" class="te-date" value="'+e.event_date+'" title="Change the date"><button class="te-del" data-del="'+e.id+'">Delete</button><button class="upload-btn te-done" data-doneedit="'+e.id+'" style="margin:0">Done</button></div>'
           +'</div>';
       }
-      return '<div class="todo-item"><span class="todo-heart">&#9825;</span><div class="todo-body"><div class="todo-title">'+escTxt(e.title)+'</div>'+(e.details?'<div class="todo-details">'+escTxt(e.details)+'</div>':'')+'</div><button class="todo-edit" data-edititem="'+e.id+'">edit</button></div>';
+      let tt=e.title||'', dd=e.details||''; // if no saved details, split "Title: description" for display
+      if(!dd){ const ci=tt.indexOf(': '); if(ci>0){ dd=tt.slice(ci+2); tt=tt.slice(0,ci); } }
+      return '<div class="todo-item"><span class="todo-heart">&#9825;</span><div class="todo-body"><div class="todo-title">'+escTxt(tt)+'</div>'+(dd?'<div class="todo-details">'+escTxt(dd)+'</div>':'')+'</div><button class="todo-edit" data-edititem="'+e.id+'">edit</button></div>';
     }).join('');
   }
   function openDayModal(date){ selDate=date; editingId=null; renderDayModal(); $('dayModal').style.display='flex'; const pi=$('planInput'); if(pi) pi.value=''; }
