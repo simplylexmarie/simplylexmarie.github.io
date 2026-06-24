@@ -110,14 +110,30 @@
   .plan-row .plan-date{width:auto;font-size:.74rem;padding:4px 7px;border:1px solid var(--pink2);border-radius:8px;background:#fff;color:var(--ink);font-family:inherit}
   .modal-overlay{position:fixed;inset:0;z-index:200;background:rgba(36,22,25,.45);display:flex;align-items:center;justify-content:center;padding:20px}
   .modal-card{background:var(--paper);border-radius:18px;width:100%;max-width:440px;max-height:84vh;overflow:auto;padding:22px;box-shadow:0 30px 60px -20px rgba(36,22,25,.5)}
-  .modal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
-  .modal-head h3{font-size:1.15rem;font-weight:800}
   .modal-close{background:var(--cream);width:30px;height:30px;border-radius:50%;color:var(--ink);font-size:1.2rem;line-height:1;flex:0 0 auto}
-  .dm-row{display:flex;align-items:center;gap:7px;background:var(--cream);border-radius:10px;padding:8px;margin-bottom:8px}
-  .dm-row .dm-text{flex:1;width:auto;font-size:.85rem;padding:7px 9px;border:1px solid var(--line);border-radius:8px;background:#fff}
-  .dm-row .dm-date{width:auto;font-size:.72rem;padding:6px 7px;border:1px solid var(--pink2);border-radius:8px;background:#fff;color:var(--ink);font-family:inherit;flex:0 0 auto}
-  .dm-add{display:flex;gap:8px;margin-top:12px}
+  .dm-add{display:flex;gap:8px;margin-top:14px}
   .dm-add input{flex:1}
+  /* to-do list pop-up look */
+  .todo-card{background:#F7C9DE;position:relative;padding-top:34px}
+  .todo-close{position:absolute;top:12px;right:12px;background:rgba(255,255,255,.55)}
+  .todo-h{text-align:center;font-weight:900;letter-spacing:3px;font-size:1.55rem;color:var(--red-deep)}
+  .todo-bow{display:flex;align-items:center;justify-content:center;gap:8px;margin:5px 0 2px;font-size:.9rem}
+  .todo-bow span{height:1.5px;width:64px;background:var(--red);opacity:.45;border-radius:2px}
+  .todo-date{text-align:center;color:var(--brown);font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}
+  .todo-empty{text-align:center;color:var(--brown);font-size:.85rem;padding:16px 0}
+  .todo-item{display:flex;align-items:flex-start;gap:10px;padding:10px 2px;border-bottom:1.5px solid rgba(199,44,66,.28)}
+  .todo-heart{color:#FF4E8A;font-size:1.05rem;line-height:1.3;flex:0 0 auto}
+  .todo-body{flex:1;min-width:0}
+  .todo-title{font-weight:700;font-size:.92rem;color:var(--ink);word-break:break-word}
+  .todo-details{font-size:.8rem;color:#6a4d53;margin-top:3px;white-space:pre-wrap;word-break:break-word}
+  .todo-edit{margin-left:8px;background:none;color:var(--red-deep);font-size:.72rem;font-weight:800;text-decoration:underline;flex:0 0 auto}
+  .todo-edit-box{background:rgba(255,255,255,.6);border-radius:12px;padding:11px;margin-bottom:9px}
+  .todo-edit-box .te-title{width:100%;font-size:.9rem;font-weight:600;padding:8px 10px;border:1px solid var(--pink2);border-radius:8px;background:#fff;margin-bottom:7px}
+  .todo-edit-box .te-details{width:100%;min-height:64px;font-family:inherit;font-size:.82rem;padding:8px 10px;border:1px solid var(--pink2);border-radius:8px;background:#fff;resize:vertical}
+  .te-controls{display:flex;align-items:center;gap:8px;margin-top:8px;flex-wrap:wrap}
+  .te-controls .te-date{width:auto;font-size:.74rem;padding:6px 7px;border:1px solid var(--pink2);border-radius:8px;background:#fff;color:var(--ink);font-family:inherit}
+  .te-del{background:#fff;color:var(--red);border:1px solid var(--pink2);border-radius:999px;padding:5px 13px;font-size:.74rem;font-weight:700}
+  .te-done{margin-left:auto}
   .cal-cell:not(.blank){position:relative}
   .cal-cell:not(.blank)::after{content:'+';position:absolute;top:2px;right:5px;font-size:.85rem;font-weight:800;color:var(--red);opacity:0;transition:opacity .12s}
   .cal-cell:not(.blank):hover::after{opacity:.55}
@@ -269,14 +285,14 @@
 
 <!-- day to-do pop-up -->
 <div id="dayModal" class="modal-overlay" style="display:none">
-  <div class="modal-card">
-    <div class="modal-head">
-      <h3 id="dmTitle"></h3>
-      <button id="dmClose" class="modal-close" title="Close">×</button>
-    </div>
+  <div class="modal-card todo-card">
+    <button id="dmClose" class="modal-close todo-close" title="Close">×</button>
+    <div class="todo-h">TO DO LIST</div>
+    <div class="todo-bow"><span></span>🎀<span></span></div>
+    <div id="dmTitle" class="todo-date"></div>
     <div id="dmList"></div>
     <div class="dm-add">
-      <input type="text" id="planInput" placeholder="add a to-do for this day…">
+      <input type="text" id="planInput" placeholder="add an idea for this day…">
       <button class="upload-btn" id="planAdd" style="margin:0">Add</button>
     </div>
   </div>
@@ -464,15 +480,26 @@
     $('calMonth').textContent=calMonth.toLocaleDateString('en-US',{month:'long',year:'numeric'});
   }
   function escAttr(s){return escTxt(s).replace(/"/g,'&quot;');}
+  let editingId=null;
   function renderDayModal(){
     if(!selDate) return;
     const de=planEvents.filter(e=>e.event_date===selDate);
     const label=new Date(selDate+'T00:00').toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
     $('dmTitle').textContent=label;
-    $('dmList').innerHTML=de.length?de.map(e=>'<div class="dm-row"><input type="text" class="dm-text" data-edittext="'+e.id+'" value="'+escAttr(e.title)+'"><input type="date" class="dm-date" data-movedate="'+e.id+'" value="'+e.event_date+'" title="Move to another day"><button class="note-x" data-del="'+e.id+'" title="Delete">×</button></div>').join(''):'<p class="hint">Nothing planned yet. Add a to-do below.</p>';
+    if(!de.length){ $('dmList').innerHTML='<p class="todo-empty">Nothing here yet. Add your first idea below.</p>'; return; }
+    $('dmList').innerHTML=de.map(e=>{
+      if(String(e.id)===String(editingId)){
+        return '<div class="todo-edit-box" data-editbox="'+e.id+'">'
+          +'<input type="text" class="te-title" value="'+escAttr(e.title)+'" placeholder="title">'
+          +'<textarea class="te-details" placeholder="details…">'+escTxt(e.details||'')+'</textarea>'
+          +'<div class="te-controls"><input type="date" class="te-date" value="'+e.event_date+'" title="Change the date"><button class="te-del" data-del="'+e.id+'">Delete</button><button class="upload-btn te-done" data-doneedit="'+e.id+'" style="margin:0">Done</button></div>'
+          +'</div>';
+      }
+      return '<div class="todo-item"><span class="todo-heart">&#9825;</span><div class="todo-body"><div class="todo-title">'+escTxt(e.title)+'</div>'+(e.details?'<div class="todo-details">'+escTxt(e.details)+'</div>':'')+'</div><button class="todo-edit" data-edititem="'+e.id+'">edit</button></div>';
+    }).join('');
   }
-  function openDayModal(date){ selDate=date; renderDayModal(); $('dayModal').style.display='flex'; const pi=$('planInput'); if(pi) pi.value=''; }
-  function closeDayModal(){ $('dayModal').style.display='none'; }
+  function openDayModal(date){ selDate=date; editingId=null; renderDayModal(); $('dayModal').style.display='flex'; const pi=$('planInput'); if(pi) pi.value=''; }
+  function closeDayModal(){ editingId=null; $('dayModal').style.display='none'; }
   function renderNotes(){
     const l=$('notesList'); if(!l) return;
     l.innerHTML=planNotes.length?planNotes.map(n=>'<div class="note-row"><span class="note-body">'+escTxt(n.body)+'</span><button class="note-sched" data-sched="'+n.id+'" title="Schedule on calendar">📅</button><button class="note-x" data-notedel="'+n.id+'">×</button></div>').join(''):'<p class="hint">No ideas yet — add one above.</p>';
@@ -514,7 +541,20 @@
     else if(t.id==='noteAdd'){ const v=($('noteInput').value||'').trim(); if(!v)return; const {data,error}=await db.from('planner_notes').insert({body:v}).select(); if(!error&&data){ planNotes.unshift(data[0]); $('noteInput').value=''; renderNotes(); } }
     else if(t.id==='aiGo'){ getAIideas(); }
     else if(t.dataset.aisave!=null){ const it=aiIdeas[+t.dataset.aisave]; if(!it)return; const body=(it.title?it.title+': ':'')+(it.idea||''); const {data,error}=await db.from('planner_notes').insert({body}).select(); if(!error&&data){ planNotes.unshift(data[0]); renderNotes(); t.textContent='Saved ✓'; t.disabled=true; } }
-    else if(t.dataset.del){ const id=t.dataset.del; await db.from('planner_events').delete().eq('id',id); planEvents=planEvents.filter(x=>String(x.id)!==String(id)); renderCalendar(); renderDayModal(); }
+    else if(t.dataset.del){ const id=t.dataset.del; await db.from('planner_events').delete().eq('id',id); planEvents=planEvents.filter(x=>String(x.id)!==String(id)); if(String(editingId)===String(id)) editingId=null; renderCalendar(); renderDayModal(); }
+    else if(t.dataset.edititem){ editingId=t.dataset.edititem; renderDayModal(); }
+    else if(t.dataset.doneedit){
+      const id=t.dataset.doneedit, box=t.closest('.todo-edit-box');
+      const title=(box.querySelector('.te-title').value||'').trim();
+      const details=(box.querySelector('.te-details').value||'').trim();
+      const date=box.querySelector('.te-date').value||selDate;
+      if(title){
+        let {error}=await db.from('planner_events').update({title,details,event_date:date}).eq('id',id);
+        if(error){ const r2=await db.from('planner_events').update({title,event_date:date}).eq('id',id); error=r2.error; } // details column may not exist yet
+        if(!error){ const ev=planEvents.find(x=>String(x.id)===String(id)); if(ev){ ev.title=title; ev.details=details; ev.event_date=date; } }
+      }
+      editingId=null; renderCalendar(); renderDayModal();
+    }
     else if(t.id==='dmClose'||t.id==='dayModal'){ closeDayModal(); }
     else if(t.dataset.notedel){ const id=t.dataset.notedel; await db.from('planner_notes').delete().eq('id',id); planNotes=planNotes.filter(x=>String(x.id)!==String(id)); if(pendingNote&&String(pendingNote.id)===String(id)){ pendingNote=null; renderSchedBanner(); } renderNotes(); }
     else if(t.dataset.sched){ const n=planNotes.find(x=>String(x.id)===String(t.dataset.sched)); if(n){ pendingNote=n; renderSchedBanner(); $('schedBanner').scrollIntoView({behavior:'smooth',block:'nearest'}); } }
@@ -525,21 +565,6 @@
         const {data,error}=await db.from('planner_events').insert({event_date:ds,title:pendingNote.body}).select();
         if(!error&&data){ planEvents.push(data[0]); const nid=pendingNote.id; await db.from('planner_notes').delete().eq('id',nid); planNotes=planNotes.filter(x=>String(x.id)!==String(nid)); pendingNote=null; selDate=ds; renderSchedBanner(); renderCalendar(); renderNotes(); }
       } else { openDayModal(ds); renderCalendar(); }
-    }
-  });
-
-  // edit a planned post's date or text (Google-Calendar style)
-  document.addEventListener('change', async e=>{
-    const t=e.target;
-    if(t.dataset && t.dataset.movedate){
-      const id=t.dataset.movedate, nd=t.value; if(!nd){ renderDayModal(); return; }
-      const {error}=await db.from('planner_events').update({event_date:nd}).eq('id',id);
-      if(!error){ const ev=planEvents.find(x=>String(x.id)===String(id)); if(ev) ev.event_date=nd; renderCalendar(); renderDayModal(); }
-      else { renderDayModal(); }
-    } else if(t.dataset && t.dataset.edittext){
-      const id=t.dataset.edittext, nv=(t.value||'').trim(); if(!nv){ renderDayModal(); return; }
-      const {error}=await db.from('planner_events').update({title:nv}).eq('id',id);
-      if(!error){ const ev=planEvents.find(x=>String(x.id)===String(id)); if(ev) ev.title=nv; renderCalendar(); }
     }
   });
 
