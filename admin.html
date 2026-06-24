@@ -562,7 +562,10 @@
     else if(t.closest('.cal-cell') && !t.closest('.cal-cell').classList.contains('blank')){
       const ds=t.closest('.cal-cell').dataset.date;
       if(pendingNote){
-        const {data,error}=await db.from('planner_events').insert({event_date:ds,title:pendingNote.body}).select();
+        const raw=pendingNote.body, ci=raw.indexOf(': '); // split "Title: description" into title + details
+        const ttl=ci>0?raw.slice(0,ci):raw, det=ci>0?raw.slice(ci+2):'';
+        let {data,error}=await db.from('planner_events').insert({event_date:ds,title:ttl,details:det}).select();
+        if(error){ const r2=await db.from('planner_events').insert({event_date:ds,title:raw}).select(); data=r2.data; error=r2.error; } // fallback if details column absent
         if(!error&&data){ planEvents.push(data[0]); const nid=pendingNote.id; await db.from('planner_notes').delete().eq('id',nid); planNotes=planNotes.filter(x=>String(x.id)!==String(nid)); pendingNote=null; selDate=ds; renderSchedBanner(); renderCalendar(); renderNotes(); }
       } else { openDayModal(ds); renderCalendar(); }
     }
