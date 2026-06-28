@@ -64,10 +64,10 @@
   .slider--dark .slider__track{animation-duration:46s}
   @keyframes sliderScroll{to{transform:translateX(-25%)}}
   @media(prefers-reduced-motion:reduce){.slider__track{animation:none}}
-  .statbar{background:var(--ink);padding:30px 22px;border-top:1px solid rgba(255,255,255,.12);border-bottom:1px solid rgba(255,255,255,.12)}
-  .statbar__row{max-width:1080px;margin:0 auto;display:flex;justify-content:center;align-items:flex-start;gap:clamp(40px,10vw,90px);flex-wrap:wrap;text-align:center}
-  .stat__num{font-weight:900;font-size:clamp(1.9rem,5.5vw,2.6rem);color:#fff;line-height:1;letter-spacing:-.5px}
-  .stat__label{font-size:.74rem;letter-spacing:2px;text-transform:uppercase;color:var(--hot);margin-top:9px;font-weight:600}
+  .statbar{background:var(--ink);padding:14px 22px;border-top:1px solid rgba(255,255,255,.12);border-bottom:1px solid rgba(255,255,255,.12)}
+  .statbar__row{max-width:1080px;margin:0 auto;display:flex;justify-content:center;align-items:center;gap:clamp(18px,5vw,46px);flex-wrap:wrap;text-align:center;color:var(--cream);font-size:.85rem;letter-spacing:.3px}
+  .stat{display:flex;align-items:baseline;gap:6px}
+  .stat__num{font-weight:900;color:#fff;font-size:1.05rem;letter-spacing:-.3px}
 
   /* full-bleed section + inner container */
   .band{width:100%;padding:64px 0;position:relative;overflow:hidden}
@@ -345,8 +345,9 @@
 <!-- HERO SLIDER (stats / as-seen-on) -->
 <div class="statbar">
   <div class="statbar__row">
-    <div class="stat"><div class="stat__num">6,900+</div><div class="stat__label">TikTok followers</div></div>
-    <div class="stat"><div class="stat__num">154K+</div><div class="stat__label">TikTok likes</div></div>
+    <div class="stat"><span class="stat__num">6,900+</span> TikTok followers</div>
+    <div class="stat"><span class="stat__num">154K+</span> TikTok likes</div>
+    <div class="stat"><span class="stat__num">1.58M+</span> video views</div>
   </div>
 </div>
 
